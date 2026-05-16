@@ -1,12 +1,26 @@
 <?php 
     require_once('../Database/database.php');
     $con =  new Database();
+    session_start();
     $getCategory = $con->viewCategory();
     
     if(isset($_POST["AddCat"])){
         
         $InputCategory = $_POST["categoryInput"];
         $AddCategory = $con->AddCategory($InputCategory);
+    }
+    if(isset($_POST['deleteCategory'])){
+        $categoryID = $_POST["delete_id"];
+        $categoryName = $_POST["delete_name"];
+        try{
+        $deleteCategory = $con->deleteCategory($categoryID);
+        $_SESSION['success_message'] = $categoryName . 'has been deleted';
+        header('Location: ManageMenu.php');
+        exit();
+        }
+        catch(Exception $e){
+            $error_message = 'Cannot delete this book, It may have active loans or copies in use.';
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -52,19 +66,33 @@
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
-            <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk Kiosk</button>
+            <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk</button>
             <button onclick="toManageMenu()" class="btn custom-btn" type="button">Manage Menu</button>
             <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
             <button onclick="toProducts()" class="btn custom-btn" type="submit">Products</button>
-            <button class="btn custom-btn" type="submit">My Payroll</button>
-            <button class="btn custom-btn" type="submit">Daily Sales Report</button>
-            <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
+            <button class="btn custom-btn" type="submit">Sales Report</button>
             <button class="btn custom-btn" type="submit">Payroll records</button>
-            <button class="btn custom-btn" type="submit">Admin Panel</button>
+            <button onclick="toStaffs()" class="btn custom-btn" type="submit">Monitor Staff</button>
         </div>
     </div>
 
     <main class="w-100" style="margin-left: 350px; margin-top: 30px;">
+        <?php if(isset($error_message)){ ?>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        </strong><?php echo $error_message;?>
+        <button type="button" class="btn-close" data-bs-dismissible="alert" aria-label="Close"></button>
+    </div>
+    <?php } ?>
+    <?php if(isset($_SESSION['success_message'])) {?>
+    <div class="alert alert-success alert dismissible fade show" role="alert">
+        <strong>Success!</strong> <?php echo $_SESSION['success_message'];?>
+        <button type="button" class="btn-colse" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <?php 
+        unset($_SESSION['success_message']);
+    }?>
 
     <div class="container w-50 h-30 mt-3 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
         <h3 class="fw-bold">Product Control</h3>
@@ -128,7 +156,7 @@
 
             <form action="" method="POST">
                 <div class="form-floating">
-                    <input type="text" class="form-control" name="categoryInput" id="floatingPassword" placeholder="Category">
+                    <input type="text" class="form-control" name="categoryInput" id="floatingPassword" placeholder="Category" required>
                     <label for="floatingPassword">Category</label>
                 </div>
 
@@ -142,11 +170,12 @@
     <div class="col mt-4 ">
     <div class="card e-3 w-100 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
     
-    <table class="table table-hover">
+    <table class="table table-hover text-center align-middle">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Category</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -158,6 +187,20 @@
             <tr>
                 <td><?php echo $Category['Category_ID']; ?></td>
                 <td><?php echo $Category['Category_Name']; ?></td>
+                <td>
+                    <button type="button" 
+                            class="btn btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="">Edit</button>
+
+                    <button type="button" 
+                    class="btn btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteTargetCategory"
+                    data-bs-catId = "<?php echo $Category['Category_ID'];?>"
+                    data-bs-category="<?php echo $Category['Category_Name'];?>">Delete</button>
+                
+                </td>
             </tr>
             <?php
                 }
@@ -165,13 +208,51 @@
             </tbody>
         </table>
     </div>
-
+    
+<!--Delete Category Modal-->
+        <div class="modal fade" id="deleteTargetCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteMessage"></strong></p>
+            </div>
+            <div class="modal-footer">
+                <form method="POST">
+                    <input type="hidden" name="delete_id" id="delete_id">
+                    <input type="hidden" name="delete_name" id="deleteName">
+                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="deleteCategory" class="btn btn-primary">Complete Delete</button>
+                </form>    
+            </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-
 </div>
 </div>
 </main>
 </body>
+<script>
+const deleteCategoryModal = document.getElementById('deleteTargetCategory');
+
+deleteCategoryModal.addEventListener('show.bs.modal', function (event) {
+
+    const button = event.relatedTarget;
+    if(!button) return;
+
+
+    const id = button.getAttribute('data-bs-catId') || '';
+    const name = button.getAttribute('data-bs-category') || '';
+
+    document.getElementById('delete_id').value = id;
+    document.getElementById('deleteName').value = name;
+    document.getElementById('deleteMessage').textContent = name;
+
+});
+</script>
 <script src="window.js"></script>
 </html>

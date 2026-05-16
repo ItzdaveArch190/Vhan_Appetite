@@ -13,3 +13,7 @@ function toDashboard(){
 function toProducts(){
     window.location.href = "ViewProducts.php";
 }
+
+function toStaffs(){
+    window.location.href = "MonitorStaff.php";
+}

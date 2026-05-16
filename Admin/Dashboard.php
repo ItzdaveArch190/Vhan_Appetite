@@ -13,7 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    
+    <script src="https://unpkg.com/feather-icons"></script>
     <title>Dashboard Panel</title>
     <style>
         .sidebar {
@@ -22,8 +23,11 @@
             top: 0;
             left: 0;
             height: 100vh;
-            overflow: hidden; 
+            display: flex;              
+            flex-direction: column;    
+            justify-content: space-between; 
         }
+
         
         .owner-name{
             font-family:'Brush Script MT', 'Brush Script Std', cursive;
@@ -35,6 +39,11 @@
         }
         .custom-btn:hover{
             background-color:#BC7F15;
+        }
+
+        .logout-btn{
+            height: 50px;
+            width: 100px;
         }
     </style>
 </head>
@@ -53,15 +62,17 @@
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
-            <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk Kiosk</button>
+            <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk</button>
             <button onclick="toManageMenu()" class="btn custom-btn" type="button">Manage Menu</button>
             <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
             <button onclick="toProducts()" class="btn custom-btn" type="submit">Products</button>
-            <button class="btn custom-btn" type="submit">My Payroll</button>
-            <button class="btn custom-btn" type="submit">Daily Sales Report</button>
-            <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
+            <button class="btn custom-btn" type="submit">Sales Report</button>
             <button class="btn custom-btn" type="submit">Payroll records</button>
-            <button class="btn custom-btn" type="submit">Admin Panel</button>
+            <button onclick="toStaffs()" class="btn custom-btn" type="submit">Monitor Staff</button>
+        </div>
+
+        <div class="text-start ms-3 text-white mb-5">
+            <button type="button" class="btn logout-btn btn-warning"><ion-icon name="log-out-outline"></ion-icon></button>
         </div>
     </div>
 
@@ -75,9 +86,8 @@
             </div>
         </div>
 
-        <div class="container-fluid px-4">
-        <div class="row g-4">
-
+<div class="container-fluid px-4">
+    <div class="row g-4">
         <div class="col-md-6 col-lg-3">
             <div class="card shadow-sm border-0 p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded text-center">
                 <h6>DAILY SALES</h6>
@@ -171,7 +181,8 @@
 </div>
 
 </main>
-
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 
 <script src="window.js"></script>
