@@ -1,3 +1,6 @@
+<?php 
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,6 +114,12 @@
 </div>  
 
     <main class="" >
+
+        <div class="">
+            <div class="">
+
+            </div>
+        </div>
 
     </main>
 

@@ -1,3 +1,33 @@
+<?php 
+    session_start();
+    require_once("../Database/database.php");
+    $con = new Database();
+
+    $Burger_PriceLists = $con->getBurger_PriceList();
+    $Hotdog_PriceLists = $con->getHotdog_PriceList();
+    $Corndog_PriceLists = $con->getCorndog_Pricelist();
+    $Beverage_Pricelists = $con->getBeverage_Pricelist();
+
+    if(isset($_POST['add'])){
+
+        $id = $_POST['product_id'];
+        $product = $_POST['product_name'];
+        $price = $_POST['product_price'];
+
+        if(!isset($_SESSION['cart'])){
+            $_SESSION['cart'] = [];
+        }
+
+        $found = false;
+        
+        foreach($_SESSION['cart'] as &$item){
+            if($item['Product_ID'] == $id){
+                $item['quantity']++;
+            }
+        }
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -172,7 +202,7 @@
                 <div class=" profile-container w-auto">
                     <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
                 </div>
-                <h3 class="title">Magandang Araw, <?php echo "Dave Besorio"; ?></h3>
+                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
             </div>
 
             <div class="business-name-divider">
@@ -180,7 +210,7 @@
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
             </div>
-             <div class="display-total-order">
+            <div class="display-total-order">
                 <h4> Total Order: <?php echo 237;?></h4>
             </div>
         </div>
@@ -220,24 +250,42 @@
     <div class="Burger-header text-center" >
         <h5 style="font-family: 'Bebas Neue', sans-serif;">Burger Section</h5>
     </div>
-        <?php ?>
-        <div class="col-md-3 col-lg-2 ">
+        <?php foreach($Burger_PriceLists as $burger) {?>
+        <div class="col-md-3 col-lg-3 ">
             <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
-            <img src="../images/Burger (2).png" style="height: 150px;" class="card-img-top" alt="...">
-                <h4 class="card-title mt-1">Bacon Burger</h4>
+                <div class="pop p-2">
+                    <button type="button" class="btn btn-primary" disabled>
+                        <span class="badge text-bg-primary"><?php echo $burger['Status'];?></span>
+                    </button>
+                </div>
+            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+                <h6 class="card-title mt-1"><?php echo $burger['Product_Name']; ?></h6>
 
                 <div class="price">
-                    <button class="btn btn-primary" disabled><?php echo "239.00";?></button>
+                    <button class="btn btn-primary" disabled><?php echo $burger['Product_Price'];?></button>
                 </div>
 
                 <div class="d-flex justify-content-evenly g-2 p-2">
-                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                    <button class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                    <form method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $burger['Product_ID'];?>">
+                        <input type="hidden" name="product_name" value="<?php echo $burger['Product_Name'];?>">
+                        <input type="hidden" name="product_price" value="<?php echo $burger['Product_Price'];?>">
+
+                        <button type="submit" name="add" class="btn btn-primary" <?php if($burger['Status'] != 'Available') echo 'disabled'; ?>>
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+
+                        <button type="submit" name="remove" class="btn btn-primary">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     <!--Tapos eto yung baba dapat andito yung php nag mag aanesss hahahahahah-->
-        <?php ?>
+        <?php } ?>
+
+    </div>
 </div>
 
 <div class="Hotdog text-center mt-4" id="hotdog-header">
@@ -247,23 +295,37 @@
             <h4 style="font-family: 'Bebas Neue', sans-serif;">Hotdog Section</h4>
         </div>
     
-    <?php ?>
-        <div class="col-md-3 col-lg-2">
-            <div class="card h-200 w-350 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
-            <img src="../images/Burger (2).png" style="height: 150px;" class="card-img-top" alt="...">
-                <h5 class="card-title mt-1">Premium Hotdog</h5>
+    <?php foreach($Hotdog_PriceLists as $hotdog) {?>
+        <div class="col-md-3 col-lg-3 ">
+            <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
+                <div class="pop p-2">
+                    <button type="button" class="btn btn-primary" disabled>
+                        <span class="badge text-bg-primary"><?php echo $hotdog['Status'];?></span>
+                    </button>
+                </div>
+            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+                <h6 class="card-title mt-1"><?php echo $hotdog['Product_Name']; ?></h6>
 
                 <div class="price">
-                    <button class="btn btn-primary" disabled><?php echo "239.00";?></button>
+                    <button class="btn btn-primary" disabled><?php echo $hotdog['Product_Price'];?></button>
                 </div>
 
                 <div class="d-flex justify-content-evenly g-2 p-2">
-                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                    <button class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                    
+                    <form method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $hotdog['Product_ID'];?>">
+                        <input type="hidden" name="product_name" value="<?php echo $hotdog['Product_Name'];?>">
+                        <input type="hidden" name="product_price" value="<?php echo $hotdog['Product_Price'];?>">
+
+                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
+                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                    </form>
+
                 </div>
             </div>
         </div>
-    <?php ?>
+    <!--Tapos eto yung baba dapat andito yung php nag mag aanesss hahahahahah-->
+        <?php } ?>
 
     </div>
 </div>
@@ -274,48 +336,75 @@
             <h4>Corndog</h4>
         </div>
 <!--tuitle-->
-        <?php ?>
-        <div class="col-md-3 col-lg-2">
-            <div class="card h-200 w-350 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
-            <img src="../images/Burger (2).png" style="height: 150px;" class="card-img-top" alt="...">
-                <h5 class="card-title mt-1">B1T1 Classic Corndog</h5>
+        <?php foreach($Corndog_PriceLists as $corndog) {?>
+        <div class="col-md-3 col-lg-3 ">
+            <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
+                <div class="pop p-2">
+                    <button type="button" class="btn btn-primary" disabled>
+                        <span class="badge text-bg-primary"><?php echo $corndog['Status'];?></span>
+                    </button>
+                </div>
+            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+                <h6 class="card-title mt-1"><?php echo $corndog['Product_Name']; ?></h6>
 
                 <div class="price">
-                    <button class="btn btn-primary" disabled><?php echo "239.00";?></button>
+                    <button class="btn btn-primary" disabled><?php echo $corndog['Product_Price'];?></button>
                 </div>
 
                 <div class="d-flex justify-content-evenly g-2 p-2">
-                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                    <button class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+
+                    <form action="method">
+                        <input type="hidden" name="product_id" value="<?php echo $corndog['Product_ID'];?>">
+                        <input type="hidden" name="product_name" value="<?php echo $corndog['Product_Name'];?>">
+                        <input type="hidden" name="product_price" value="<?php echo $corndog['Product_Price'];?>">
+
+                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
+                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                    </form>
+
                 </div>
             </div>
         </div>
-    <?php ?>
+    <!--Tapos eto yung baba dapat andito yung php nag mag aanesss hahahahahah-->
+        <?php } ?>
 </div>
 
-<div class="Beverages text-center mt-4" id="Beverages">
+<div class="Beverages text-center mt-4" id="beverage-header">
     <div class="row g-3">
         <div class="Beverage-header" style="font-family: 'Bebas Neue', sans-serif;">
             <h4>Beverages</h4>
         </div>
 <!--tuitle-->
-        <?php ?>
-        <div class="col-md-3 col-lg-2">
-            <div class="card h-200 w-350 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
-            <img src="../images/Burger (2).png" style="height: 150px;" class="card-img-top" alt="...">
-                <h5 class="card-title mt-1">Coca-cola</h5>
+        <?php foreach($Beverage_Pricelists as $Beverage) {?>
+        <div class="col-md-3 col-lg-3 ">
+            <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
+                <div class="pop p-2">
+                    <button type="button" class="btn btn-primary" disabled>
+                        <span class="badge text-bg-primary"><?php echo $Beverage['Status'];?></span>
+                    </button>
+                </div>
+            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+                <h6 class="card-title mt-1"><?php echo $Beverage['Product_Name']; ?></h6>
 
                 <div class="price">
-                    <button class="btn btn-primary" disabled><?php echo "22.00";?></button>
+                    <button class="btn btn-primary" disabled><?php echo $Beverage['Product_Price'];?></button>
                 </div>
 
                 <div class="d-flex justify-content-evenly g-2 p-2">
-                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                    <button class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                    <form method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $Beverage['Product_ID'];?>">
+                        <input type="hidden" name="product_name" value="<?php echo $Beverage['Product_Name'];?>">
+                        <input type="hidden" name="product_price" value="<?php echo $Beverage['Product_Price'];?>">
+
+                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
+                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+
+                    </form>    
                 </div>
             </div>
         </div>
-        <?php ?>
+    <!--Tapos eto yung baba dapat andito yung php nag mag aanesss hahahahahah-->
+        <?php } ?>
     </div>
 
 </div>

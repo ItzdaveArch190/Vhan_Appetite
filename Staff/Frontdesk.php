@@ -1,3 +1,14 @@
+<?php 
+    session_start();
+    require_once('../Database/database.php');
+    $con = new Database();
+
+    if(!isset($_SESSION['user_id'])){
+        header("Location: Login.php");
+        exit();
+    }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +94,7 @@
                 <div class=" profile-container w-auto">
                     <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
                 </div>
-                <h3 class="title">Hello, <?php echo "Dave Besorio"; ?></h3>
+                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
             </div>
 
             <div class="business-name-divider">
@@ -112,7 +123,7 @@
 
     <main class="" >
         <div class="heading">
-            <h3 class="fw-bold">Greetings, <?php echo "[Name ni User/Staff]"?></h3>
+            <h3 class="fw-bold">Magandang Araw!, <?php echo " " . $_SESSION['username'];?></h3>
                 <div class="row">
                     <div class="col">
                     <p class="fw-light">Monitor peformance, stock, and team execution.</p>

@@ -1,3 +1,36 @@
+<?php
+session_start();
+require_once('Database/database.php');
+$con =  new Database();
+
+$staff__Credentials = $con->staffLogin();
+
+    $error = "";
+
+    if($_SERVER['REQUEST_METHOD'] === "POST"){
+
+        $username = $_POST['email'];
+        $password = $_POST['password'];
+
+        foreach($staff__Credentials as $staff ){
+
+
+            if($username === $staff['Email'] && $password === $staff['Password']){
+
+                $_SESSION['user_id'] = $staff['Employee_ID'];
+                $_SESSION['Email'] = $staff['Email'];
+                $_SESSION['username'] = $staff['username'];
+
+                header("Location: Staff/Frontdesk.php");
+                exit();
+            } else {
+                $error="Invalid email or password";
+            }
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,6 +248,13 @@ body{
 
     <div class="card p-4 shadow" style="width: 350px;">
         <h1 class="text-center mb-4">Login</h1>
+
+        <?php if(!empty($error)): ?>
+            <div class="alert alert-danger text-center">
+                <?php echo $error; ?>
+            </div>
+        <?php endif; ?>
+
         <div class="text-center mb-3">
             <div class="text-center mb-3">
                 <i class="fa-solid fa-user fa-2x"></i>
@@ -224,15 +264,15 @@ body{
 
 
 
-        <form>
+        <form method="POST">
 
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" placeholder="Email">
+                <input type="email" class="form-control" name="email" placeholder="Email">
                 <label>Email address</label>
             </div>
 
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" placeholder="Password">
+                <input type="password" class="form-control" name="password" placeholder="Password">
                 <label>Password</label>
             </div>
 

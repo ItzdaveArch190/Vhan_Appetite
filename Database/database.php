@@ -29,7 +29,6 @@
             return $con->query("SELECT COUNT(*) AS emp FROM employee")->fetchColumn();
         }
         
-       
 
         function viewCategory(){
             $con = $this->opencon();
@@ -100,6 +99,83 @@
                 echo "Error " . $e->getMessage();
             }
         }
+
+
+        function staffLogin(){
+            $con = $this->opencon();
+            return $query = $con->query("SELECT employee.Owner_ID,
+                employee.Employee_ID,
+                CONCAT(employee.Emp_FN,' ',employee.Emp_LN) AS username,
+                employee.Password,
+                employee.Email,
+                employee.Phone_Number FROM employee
+                ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+
+        function getBurger_PriceList(){
+            $con = $this->opencon();
+            return $con->query("SELECT product_category.Category_ID,
+                product.Product_ID,
+                product.Product_Name,
+                product_price.Product_Price,
+                product.Status
+                FROM product_category
+                JOIN category ON product_category.Category_ID = category.Category_ID
+                JOIN product ON product_category.Product_ID = product.Product_ID
+                JOIN product_price ON product.Product_ID = product_price.Product_ID
+                HAVING product_category.Category_ID = 1 
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        function getHotdog_PriceList(){
+            $con = $this->opencon();
+            return $con->query("
+                SELECT product_category.Category_ID,
+                product.Product_ID,
+                product.Product_Name,
+                product_price.Product_Price,
+                product.Status
+                FROM product_category
+                JOIN category ON product_category.Category_ID = category.Category_ID
+                JOIN product ON product_category.Product_ID = product.Product_ID
+                JOIN product_price ON product.Product_ID = product_price.Product_ID
+                HAVING product_category.Category_ID = 2 
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        function getCorndog_Pricelist(){
+            $con = $this->opencon();
+            return $con->query("
+                SELECT product_category.Category_ID,
+                product.Product_ID,
+                product.Product_Name,
+                product_price.Product_Price,
+                product.Status
+                FROM product_category
+                JOIN category ON product_category.Category_ID = category.Category_ID
+                JOIN product ON product_category.Product_ID = product.Product_ID
+                JOIN product_price ON product.Product_ID = product_price.Product_ID
+                HAVING product_category.Category_ID = 3
+            ")->fetchAll();
+        }
+
+        function getBeverage_Pricelist(){
+            $con = $this->opencon();
+            return $con->query("
+                SELECT product_category.Category_ID,
+                product.Product_ID,
+                product.Product_Name,
+                product_price.Product_Price,
+                product.Status
+                FROM product_category
+                JOIN category ON product_category.Category_ID = category.Category_ID
+                JOIN product ON product_category.Product_ID = product.Product_ID
+                JOIN product_price ON product.Product_ID = product_price.Product_ID
+                HAVING product_category.Category_ID = 4 
+            ")->fetchAll();
+        }
+
         
     }
 ?>

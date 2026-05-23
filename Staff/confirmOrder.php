@@ -111,7 +111,17 @@
 </div>  
 
     <main class="" >
-        
+
+        <div class="row">
+            <div class="col-3">
+                <div class="card w-100 h-50">
+                    <div class="">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
 </body>
