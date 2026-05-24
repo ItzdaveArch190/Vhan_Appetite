@@ -13,6 +13,7 @@
     $id = $_POST['product_id'];
     $name = $_POST['product_name'];
     $price = $_POST['product_price'];
+    
 
     if(!isset($_SESSION['cart'])){
         $_SESSION['cart'] = [];
@@ -21,6 +22,9 @@
     $found = false;
 
     foreach($_SESSION['cart'] as &$item){
+
+        
+
         if($item['id'] == $id){
             $item['quantity']++; 
             $found = true;
@@ -30,6 +34,7 @@
 
     
     if(!$found){
+        
         $_SESSION['cart'][] = [
             "id" => $id,
             "name" => $name,
@@ -38,7 +43,10 @@
         ];
     }
 
-    unset($item); 
+    unset($item);
+    
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
 
@@ -61,6 +69,8 @@ if(isset($_POST['remove'])){
     }
 
     unset($item);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 echo "<pre style='color: black; background: #eee; padding:10px; margin-left: 350px;'>";
 print_r($_SESSION['cart']);

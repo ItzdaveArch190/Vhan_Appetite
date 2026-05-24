@@ -74,7 +74,7 @@
     </style>
 </head>
 <body>
-  
+
 
     <div class="sidebar bg-success text-white">
         <div class="sidebar-header m-2 b-7 pt-1 text-center">
@@ -91,13 +91,13 @@
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
             </div>
-             <div class="display-total-order">
+            <div class="display-total-order">
                 <h4> Total Order: <?php echo 237;?></h4>
             </div>
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
-           
+        
                 <button onclick="frontDesk()" class="btn custom-btn" type="submit">Frontdesk</button>
                 <button onclick="Menu()" class="btn custom-btn" type="submit">Menu</button>
                 <button onclick="Gocheckout()" class="btn custom-btn" type="submit">Checkout</button>

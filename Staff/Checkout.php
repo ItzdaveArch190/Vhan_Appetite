@@ -1,5 +1,9 @@
 <?php 
     session_start();
+
+    $_SESSION['cart'];
+    
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,6 +73,9 @@
         margin-left: 350px;
         padding: 20px;
         min-height: 100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
         }
 
         body{
@@ -77,9 +84,9 @@
     </style>
 </head>
 <body>
-  
 
-    <div class="sidebar bg-success text-white">
+
+<div class="sidebar bg-success text-white">
         <div class="sidebar-header m-2 b-7 pt-1 text-center">
 
             <div class="d-flex flex-column justify-content-center gap-3 px-3 pt-5">
@@ -115,9 +122,56 @@
 
     <main class="" >
 
-        <div class="">
-            
+    <div class="row w-100 p-3">
+
+    
+        <div class="col ps-4">
+            <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                <table class="table table-success table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                <?php
+
+                $total = 0;
+                if(!empty($_SESSION['cart'])){
+
+                    foreach($_SESSION['cart'] as $item){
+                        $totalperItem = $item['price'] * $item['quantity'];
+                        $total = $totalperItem;
+                        ?>
+                <tr>
+                    <td><?php echo $item['name']?></td>
+                    <td><?php echo $item['quantity']?></td>
+                    <td><?php echo $totalperItem;?></td>
+                </tr>
+                
+                    <?php
+
+                        }
+                    }
+                ?>
+                <tr>
+                    <td><strong>Subtotal : </strong></td>
+                    <td></td>
+                    <td><strong><?php echo $total;?></strong></td>
+                </tr>
+                    </tbody>
+                </table>
+                <form>
+                    <button class="btn btn-primary">
+                        Confirm Order
+                    </button>
+                </form>    
+            </div>
         </div>
+        
+    </div>
 
     </main>
 

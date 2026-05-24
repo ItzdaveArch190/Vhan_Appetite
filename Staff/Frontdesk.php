@@ -3,6 +3,11 @@
     require_once('../Database/database.php');
     $con = new Database();
 
+    $employeeID = $_SESSION['user_id'];
+
+    $gettotalOrder = $con->getTotalOrders($employeeID);
+
+
     if(!isset($_SESSION['user_id'])){
         header("Location: Login.php");
         exit();
@@ -85,7 +90,7 @@
     </style>
 </head>
 <body>
-  
+
 
     <div class="sidebar bg-success text-white">
         <div class="sidebar-header m-2 b-7 pt-1 text-center">
@@ -102,7 +107,7 @@
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
             </div>
-             <div class="display-total-order">
+            <div class="display-total-order">
                 <h4> Total Order: <?php echo 237;?></h4>
             </div>
         </div>
@@ -122,12 +127,22 @@
 </div>  
 
     <main class="" >
-        <div class="heading">
-            <h3 class="fw-bold">Magandang Araw!, <?php echo " " . $_SESSION['username'];?></h3>
+        <div class="heading text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded card p-3">
+            <h1 class="fw-bold">Magandang Araw!, <?php echo " " . $_SESSION['username'];?></h1>
                 <div class="row">
                     <div class="col">
                     <p class="fw-light">Monitor peformance, stock, and team execution.</p>
                 </div>
+            </div>
+        </div>
+
+        <div class="row w-25 p-3 card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+            <div class="col text-center">
+                <div><h4 class="fw-bold">Total Order</h4></div>
+            </div>
+
+            <div class="col text-center">
+                <h3><?php echo $gettotalOrder; ?></h3>
             </div>
         </div>
     </main>

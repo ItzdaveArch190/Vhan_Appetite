@@ -176,6 +176,19 @@
             ")->fetchAll();
         }
 
+        function getTotalOrders($employeeID){
+        $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT COUNT(*) AS TotalOrder FROM orders WHERE Employee_ID = ?");
+                $stmt->execute([$employeeID]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $result['TotalOrder'];
+                } catch(PDOException $e){
+                throw $e;
+            }
+        }
+
+
         
     }
 ?>
