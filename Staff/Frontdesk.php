@@ -22,72 +22,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <title>Burger Section</title>
-    <style>
-        .sidebar {
-            width: 250px;
-            min-height:100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            display: flex;              
-            flex-direction: column;    
-            justify-content: space-between; 
-        }
-
-        
-        .owner-name{
-            font-family:'Brush Script MT', 'Brush Script Std', cursive;
-            font-size: 20px;
-        }
-        .custom-btn{
-            background-color:#E69B1A;
-            height: 50px;
-        }
-        .custom-btn:hover{
-            background-color:#BC7F15;
-        }
-
-        .logout-btn{
-            height: 50px;
-            width: 100px;
-        }
-        #round-profile{
-            
-            height: 100px;
-            width: 100px;
-            border-radius:50px;
-            border: none;
-            margin:0;
-            
-        }
-        .business-name-divider{
-            width:auto;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            flex-direction:row;
-            margin:0;
-        
-        }
-        .title{
-            margin:0;
-        }
-        .sidebar-header{
-            padding-left: 10px;
-            padding-right:10px;
-        }
-        main{
-
-        margin-left: 350px;
-        padding: 20px;
-        min-height: 100vh;
-        }
-
-        body{
-            margin:0;
-        }
-    </style>
+    <link rel="stylesheet" href="Design/style.css">
 </head>
 <body>
 
