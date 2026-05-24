@@ -10,22 +10,61 @@
 
     if(isset($_POST['add'])){
 
-        $id = $_POST['product_id'];
-        $product = $_POST['product_name'];
-        $price = $_POST['product_price'];
+    $id = $_POST['product_id'];
+    $name = $_POST['product_name'];
+    $price = $_POST['product_price'];
 
-        if(!isset($_SESSION['cart'])){
-            $_SESSION['cart'] = [];
-        }
+    if(!isset($_SESSION['cart'])){
+        $_SESSION['cart'] = [];
+    }
 
-        $found = false;
-        
-        foreach($_SESSION['cart'] as &$item){
-            if($item['Product_ID'] == $id){
-                $item['quantity']++;
-            }
+    $found = false;
+
+    foreach($_SESSION['cart'] as &$item){
+        if($item['id'] == $id){
+            $item['quantity']++; 
+            $found = true;
+            break;
         }
     }
+
+    
+    if(!$found){
+        $_SESSION['cart'][] = [
+            "id" => $id,
+            "name" => $name,
+            "price" => $price,
+            "quantity" => 1
+        ];
+    }
+
+    unset($item); 
+}
+
+
+if(isset($_POST['remove'])){
+
+    $id = $_POST['product_id'];
+
+    foreach($_SESSION['cart'] as $key => &$item){
+        if($item['id'] == $id){
+
+            $item['quantity']--;
+
+            // pag zero tanggalin
+            if($item['quantity'] <= 0){
+                unset($_SESSION['cart'][$key]);
+            }
+
+            break;
+        }
+    }
+
+    unset($item);
+}
+echo "<pre style='color: black; background: #eee; padding:10px; margin-left: 350px;'>";
+print_r($_SESSION['cart']);
+echo "</pre>";
 
 ?>
 <!DOCTYPE html>
@@ -353,7 +392,7 @@
 
                 <div class="d-flex justify-content-evenly g-2 p-2">
 
-                    <form action="method">
+                    <form method="POST">
                         <input type="hidden" name="product_id" value="<?php echo $corndog['Product_ID'];?>">
                         <input type="hidden" name="product_name" value="<?php echo $corndog['Product_Name'];?>">
                         <input type="hidden" name="product_price" value="<?php echo $corndog['Product_Price'];?>">
