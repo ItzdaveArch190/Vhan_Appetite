@@ -72,9 +72,7 @@ if(isset($_POST['remove'])){
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
-echo "<pre style='color: black; background: #eee; padding:10px; margin-left: 350px;'>";
-print_r($_SESSION['cart']);
-echo "</pre>";
+
 
 ?>
 <!DOCTYPE html>
@@ -258,9 +256,6 @@ echo "</pre>";
                 <div class="col-sm-7 text-center">
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
-            </div>
-            <div class="display-total-order">
-                <h4> Total Order: <?php echo 237;?></h4>
             </div>
         </div>
 

@@ -66,20 +66,35 @@
             <h1 class="fw-bold">Magandang Araw!, <?php echo " " . $_SESSION['username'];?></h1>
                 <div class="row">
                     <div class="col">
-                    <p class="fw-light">Monitor peformance, stock, and team execution.</p>
+                    <p class="fw-light">Monitor your personal peformance.</p>
                 </div>
             </div>
         </div>
 
-        <div class="row w-25 p-3 card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-            <div class="col text-center">
-                <div><h4 class="fw-bold">Total Order</h4></div>
+            <div class="row d-flex g-4 p-3 ">
+                <div class="col-2 text-center">
+                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                        <h4 class="fw-bold">Total Order</h4>
+                        <h3><?php echo $gettotalOrder; ?></h3>
+                    </div>
+                </div>
+
+                <div class="col-4 text-center">
+                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                        <h4 class="fw-bold"><?php echo "Sales:"?></h4>
+                        <h3><?php  ?></h3>
+                    </div>
+                </div>
+
+                <div class="col-4 text-center">
+                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+
+                    </div>
+                </div>
             </div>
 
-            <div class="col text-center">
-                <h3><?php echo $gettotalOrder; ?></h3>
-            </div>
-        </div>
+            
+        
     </main>
 
 </body>

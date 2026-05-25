@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    require_once('../Database/database.php');
+    $con = new Database();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +89,7 @@
                 <div class=" profile-container w-auto">
                     <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
                 </div>
-                <h3 class="title">Hello, <?php echo "Dave Besorio"; ?></h3>
+                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
             </div>
 
             <div class="business-name-divider">
@@ -91,9 +97,7 @@
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
             </div>
-             <div class="display-total-order">
-                <h4> Total Order: <?php echo 237;?></h4>
-            </div>
+            
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
@@ -113,11 +117,9 @@
     <main class="" >
 
         <div class="row">
-            <div class="col-3">
-                <div class="card w-100 h-50">
-                    <div class="">
-
-                    </div>
+            <div class="col">
+                <div class="card text-center p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                    <h3 class="fw-bold">Completed Orders</h3>
                 </div>
             </div>
         </div>
