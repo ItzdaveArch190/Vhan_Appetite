@@ -7,7 +7,7 @@
     $Hotdog_PriceLists = $con->getHotdog_PriceList();
     $Corndog_PriceLists = $con->getCorndog_Pricelist();
     $Beverage_Pricelists = $con->getBeverage_Pricelist();
-
+    $totalProduct = $con->totalProduct();
     if(isset($_POST['add'])){
 
     $id = $_POST['product_id'];
@@ -83,10 +83,12 @@ if(isset($_POST['remove'])){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
 
     <title>Burger Section</title>
     <style>
-
+        @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Stack+Sans+Headline:wght@200..700&display=swap');
         html{
             scroll-behavior: smooth;
         }
@@ -202,7 +204,7 @@ if(isset($_POST['remove'])){
             color: white;
             transition: transform 0.1s ease-in-out;
         }
-        .fa-burger:hover{
+        nav .fa-burger:hover{
             transform: scale(1.5);
         }
 
@@ -212,7 +214,7 @@ if(isset($_POST['remove'])){
             transition: transform 0.1s ease-in-out;
         }
 
-        .fa-hotdog:hover{
+        nav .fa-hotdog:hover{
             transform: scale(1.5);
         }
 
@@ -222,18 +224,81 @@ if(isset($_POST['remove'])){
             transition: transform 0.1s ease-in-out;
         }
 
-        .fa-drumstick-bite:hover{
+        nav .fa-drumstick-bite:hover{
             transform: scale(1.5);
         }
 
-        .fa-glass-water{
+        nav .fa-glass-water{
             font-size: 36px;
             color: white;
             transition: transform 0.1s ease-in-out;
         }
 
-        .fa-glass-water:hover{
+        nav .fa-glass-water:hover{
             transform: scale(1.5);
+        }
+
+        
+        .custombtn,
+        .custombtn:hover,
+        .custombtn:focus,
+        .custombtn:active {
+            background-color: #E57C12;
+            color: white;
+            border: none;
+        }
+        
+        .custombtn:active {
+            background-color: #bf6710 !important;
+            opacity: 1 !important;
+            box-shadow: none !important;
+            color: white !important;
+        }
+
+        .burger-header,
+        .corndog-header,
+        .hotdog-header,
+        .beverage-header{
+            min-height: 120px;
+            
+            background-size:cover;
+            background-position:top center; 
+            background-repeat: no-repeat;
+            color:white;
+            font-family: "Rubik Dirt", system-ui;
+            font-weight: 900;
+            font-style: oblique;
+            
+        }
+
+        
+
+        .burger-header{
+            background-image: url("../images/background-burger.png");
+        }
+        .corndog-header{
+            background-image:url("../images/corndog-retro.png");
+        }
+        .hotdog-header{
+            background-image: url("../images/hotdog-retro.png");
+        }
+        .beverage-header{
+            background-image: url("../images/beverage-retro.png");
+        }
+
+        .burger-header p,
+        .hotdog-header p,
+        .corndog-header p,
+        .beverage-header p {
+            font-family: "Stack Sans Headline", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+
+        .icons i:hover {
+            transform: none;
         }
 
 
@@ -287,13 +352,23 @@ if(isset($_POST['remove'])){
 
 
 <main class="mt-4" >   
-    <div class="fluid-container burger-section" id="burger-header"> 
+    <div class="fluid-container text-center burger-section" id="burger-header"> 
     <div class="row g-3">
 <!--Dito ang populate ng data-->
 <!--Kasama si column dyan pag nag populate-->
-    <div class="Burger-header text-center" >
-        <h5 style="font-family: 'Bebas Neue', sans-serif;">Burger Section</h5>
-    </div>
+
+    <div class="burger-header card shadow-lg p-3 mb-5 rounded">
+                    <div>
+                        <h2 class="section-heading ">Burger Section</h2>
+                        <?php foreach($totalProduct as $total){?>
+                            <p class=" m-0">Total Products</p>
+                            <p class=" m-0"><?php echo $total['totalproduct'];?></p>
+                        <?php }?>
+                    </div>
+                    
+        </div>
+
+
         <?php foreach($Burger_PriceLists as $burger) {?>
         <div class="col-md-3 col-lg-3 ">
             <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
@@ -315,13 +390,22 @@ if(isset($_POST['remove'])){
                         <input type="hidden" name="product_name" value="<?php echo $burger['Product_Name'];?>">
                         <input type="hidden" name="product_price" value="<?php echo $burger['Product_Price'];?>">
 
-                        <button type="submit" name="add" class="btn btn-primary" <?php if($burger['Status'] != 'Available') echo 'disabled'; ?>>
+                        
+
+                        <button type="submit" name="add" class="btn custombtn" <?php if($burger['Status'] != 'Available') echo 'disabled'; ?>>
                             <i class="fa-solid fa-plus"></i>
                         </button>
 
-                        <button type="submit" name="remove" class="btn btn-primary">
+
+                        <button type="submit" name="remove" class="btn custombtn">
                             <i class="fa-solid fa-minus"></i>
                         </button>
+
+                        <div class="container p-1 text-center">
+                            <p class="h6 m-0">Stock</p>
+                            <button class="btn btn-outline-primary" disabled><?php echo $burger['Stock'];?></button>
+                        </div>
+
                     </form>
                 </div>
             </div>
@@ -335,8 +419,17 @@ if(isset($_POST['remove'])){
 <div class="Hotdog text-center mt-4" id="hotdog-header">
 
     <div class="row g-3">
-        <div class="hotdog-header">
-            <h4 style="font-family: 'Bebas Neue', sans-serif;">Hotdog Section</h4>
+
+
+        <div class="hotdog-header card shadow-lg p-3 mb-5 rounded">
+                    <div>
+                        <h2 class="section-heading ">Hotdog Section</h2>
+                        <?php foreach($totalProduct as $total){?>
+                            <p class=" m-0">Total Products</p>
+                            <p class=" m-0"><?php echo $total['totalproduct'];?></p>
+                        <?php }?>
+                    </div>
+                    
         </div>
     
     <?php foreach($Hotdog_PriceLists as $hotdog) {?>
@@ -361,8 +454,15 @@ if(isset($_POST['remove'])){
                         <input type="hidden" name="product_name" value="<?php echo $hotdog['Product_Name'];?>">
                         <input type="hidden" name="product_price" value="<?php echo $hotdog['Product_Price'];?>">
 
-                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                        <button type="submit" name="add" class="btn custombtn" <?php if($hotdog['Status'] != 'Available') echo 'disabled'; ?>><i class="fa-solid fa-plus"></i></button>
+                        
+                        <button type="submit" name="remove" class="btn custombtn"><i class="fa-solid fa-minus"></i></button>
+
+                        <div class="container p-1 text-center">
+                            <p class="h6 m-0">Stock</p>
+                            <button class="btn btn-outline-primary" disabled><?php echo $hotdog['Stock'];?></button>
+                        </div>
+
                     </form>
 
                 </div>
@@ -376,9 +476,17 @@ if(isset($_POST['remove'])){
 
 <div class="Corndog text-center mt-4" id="corndog-header">
     <div class="row g-3">
-        <div class="Beverage-header" style="font-family: 'Bebas Neue', sans-serif;">
-            <h4>Corndog</h4>
+
+
+        <div class="corndog-header card shadow-lg p-3 mb-5 rounded">
+            <h2 class="section-heading ">Corndog Section</h2>
+                <?php foreach($totalProduct as $total){?>
+                    <p class=" m-0">Total Products</p>
+                    <p class=" m-0"><?php echo $total['totalproduct'];?></p>
+                <?php }?>
         </div>
+
+
 <!--tuitle-->
         <?php foreach($Corndog_PriceLists as $corndog) {?>
         <div class="col-md-3 col-lg-3 ">
@@ -401,9 +509,15 @@ if(isset($_POST['remove'])){
                         <input type="hidden" name="product_id" value="<?php echo $corndog['Product_ID'];?>">
                         <input type="hidden" name="product_name" value="<?php echo $corndog['Product_Name'];?>">
                         <input type="hidden" name="product_price" value="<?php echo $corndog['Product_Price'];?>">
+                        
+                        <button type="submit" name="add" class="btn custombtn" <?php if($corndog['Status'] != 'Available') echo'disabled'?>><i class="fa-solid fa-plus"></i></button>
+                        <button type="submit" name="remove" class="btn custombtn"><i class="fa-solid fa-minus"></i></button>
 
-                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                        <div class="container p-1 text-center">
+                            <p class="h6 m-0">Stock</p>
+                            <button class="btn btn-outline-primary" disabled><?php echo $hotdog['Stock'];?></button>
+                        </div>
+
                     </form>
 
                 </div>
@@ -415,9 +529,15 @@ if(isset($_POST['remove'])){
 
 <div class="Beverages text-center mt-4" id="beverage-header">
     <div class="row g-3">
-        <div class="Beverage-header" style="font-family: 'Bebas Neue', sans-serif;">
-            <h4>Beverages</h4>
+
+        <div class="beverage-header card shadow-lg p-3 mb-5 rounded">
+            <h2 class="section-heading ">Beverage Section</h2>
+                <?php foreach($totalProduct as $total){?>
+                    <p class=" m-0">Total Products</p>
+                    <p class=" m-0"><?php echo $total['totalproduct'];?></p>
+                <?php }?>
         </div>
+
 <!--tuitle-->
         <?php foreach($Beverage_Pricelists as $Beverage) {?>
         <div class="col-md-3 col-lg-3 ">
@@ -440,8 +560,13 @@ if(isset($_POST['remove'])){
                         <input type="hidden" name="product_name" value="<?php echo $Beverage['Product_Name'];?>">
                         <input type="hidden" name="product_price" value="<?php echo $Beverage['Product_Price'];?>">
 
-                        <button type="submit" name="add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></button>
-                        <button type="submit" name="remove" class="btn btn-primary"><i class="fa-solid fa-minus"></i></button>
+                        <button type="submit" name="add" class="btn custombtn" <?php if($Beverage['Status'] != 'Available') echo'disabled'?>><i class="fa-solid fa-plus"></i></button>
+                        <button type="submit" name="remove" class="btn custombtn"><i class="fa-solid fa-minus"></i></button>
+
+                        <div class="container p-1 text-center">
+                            <p class="h6 m-0">Stock</p>
+                            <button class="btn btn-outline-primary" disabled><?php echo $Beverage['Stock'];?></button>
+                        </div>
 
                     </form>    
                 </div>

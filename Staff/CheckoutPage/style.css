@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Stack+Sans+Headline:wght@200..700&display=swap');
+
+        .sidebar {
+            width: 250px;
+            min-height:100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            display: flex;              
+            flex-direction: column;    
+            justify-content: space-between; 
+        }
+
+        
+        .owner-name{
+            font-family:'Brush Script MT', 'Brush Script Std', cursive;
+            font-size: 20px;
+        }
+        .custom-btn{
+            background-color:#E69B1A;
+            height: 50px;
+        }
+        .custom-btn:hover{
+            background-color:#BC7F15;
+        }
+
+        .logout-btn{
+            height: 50px;
+            width: 100px;
+        }
+        #round-profile{
+            
+            height: 100px;
+            width: 100px;
+            border-radius:50px;
+            border: none;
+            margin:0;
+            
+        }
+        .business-name-divider{
+            width:auto;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:row;
+            margin:0;
+        
+        }
+        .title{
+            margin:0;
+        }
+        .sidebar-header{
+            padding-left: 10px;
+            padding-right:10px;
+        }
+        main{
+
+        margin-left: 350px;
+        padding: 20px;
+        min-height: 100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        }
+
+        body{
+            margin:0;
+        }
+
+        .heading{
+
+            background-color:#E69B1A !important;
+            color: white;
+            font-family:'Stack Sans Headline', sans-serif;
+            font-family: "Stack Sans Headline", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .material-symbols-outlined {
+            color: #DA954B;
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }

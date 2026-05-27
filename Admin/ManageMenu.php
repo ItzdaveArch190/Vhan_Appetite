@@ -70,7 +70,7 @@
             <button onclick="toManageMenu()" class="btn custom-btn" type="button">Manage Menu</button>
             <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
             <button onclick="toProducts()" class="btn custom-btn" type="submit">Products</button>
-            <button class="btn custom-btn" type="submit">Sales Report</button>
+            <button onclick="toSalesReport()" class="btn custom-btn" type="submit">Sales Report</button>
             <button class="btn custom-btn" type="submit">Payroll records</button>
             <button onclick="toStaffs()" class="btn custom-btn" type="submit">Monitor Staff</button>
         </div>
@@ -255,4 +255,29 @@ deleteCategoryModal.addEventListener('show.bs.modal', function (event) {
 });
 </script>
 <script src="window.js"></script>
+<script>
+    function toManageMenu(){
+    window.location.href = "ManageMenu.php";
+}
+
+function toAttendance(){
+    window.location.href ="CheckAttendance.php";
+}
+
+function toDashboard(){
+    window.location.href = "Dashboard.php";
+}
+function toProducts(){
+    window.location.href = "ViewProducts.php";
+}
+
+function toStaffs(){
+    window.location.href = "MonitorStaff.php";
+}
+
+function toSalesReport(){
+    window.location.href = "DSR.php";
+}
+
+</script>
 </html>

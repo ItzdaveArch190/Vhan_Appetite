@@ -1,7 +1,7 @@
 <?php 
     session_start();
 
-    $_SESSION['cart'];
+
     
     
 ?>
@@ -12,75 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=waving_hand" />
+    <link rel="stylesheet" href="CheckoutPage/style.css">
     <title>Burger Section</title>
     <style>
-        .sidebar {
-            width: 250px;
-            min-height:100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            display: flex;              
-            flex-direction: column;    
-            justify-content: space-between; 
-        }
-
-        
-        .owner-name{
-            font-family:'Brush Script MT', 'Brush Script Std', cursive;
-            font-size: 20px;
-        }
-        .custom-btn{
-            background-color:#E69B1A;
-            height: 50px;
-        }
-        .custom-btn:hover{
-            background-color:#BC7F15;
-        }
-
-        .logout-btn{
-            height: 50px;
-            width: 100px;
-        }
-        #round-profile{
-            
-            height: 100px;
-            width: 100px;
-            border-radius:50px;
-            border: none;
-            margin:0;
-            
-        }
-        .business-name-divider{
-            width:auto;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            flex-direction:row;
-            margin:0;
-        
-        }
-        .title{
-            margin:0;
-        }
-        .sidebar-header{
-            padding-left: 10px;
-            padding-right:10px;
-        }
-        main{
-
-        margin-left: 350px;
-        padding: 20px;
-        min-height: 100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        }
-
-        body{
-            margin:0;
-        }
     </style>
 </head>
 <body>
@@ -121,8 +56,14 @@
     <main class="" >
 
     <div class="row w-100 p-3">
+        
+        <div class="heading card text-center p-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+            <div class="txt">
+                <h2 class="">Checkout Stage</h2>
+                <p class="fw-light">Please Clarify your customers order.</p>
+            </div>    
+        </div>
 
-    
         <div class="col ps-4">
             <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <table class="table table-success table-hover text-center">
@@ -161,15 +102,36 @@
                 </tr>
                     </tbody>
                 </table>
-                <form>
-                    <button class="btn btn-primary">
+                
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp">
                         Confirm Order
                     </button>
-                </form>    
+                    
             </div>
         </div>
-        
-    </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirm-popUp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                        <span class="material-symbols-outlined">
+                        waving_hand
+                        </span>Are you sure to confirm order?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Confirm Order</button>
+                </div>
+                </div>
+            </div>
+        </div>
+</div>
 
     </main>
 

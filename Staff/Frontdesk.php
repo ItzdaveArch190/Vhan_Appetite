@@ -22,7 +22,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <title>Burger Section</title>
-    <link rel="stylesheet" href="Design/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -42,9 +42,7 @@
                     <span class="owner-name">Vahn Appetite</span>
                 </div>
             </div>
-            <div class="display-total-order">
-                <h4> Total Order: <?php echo 237;?></h4>
-            </div>
+        
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
@@ -81,7 +79,7 @@
 
                 <div class="col-4 text-center">
                     <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                        <h4 class="fw-bold"><?php echo "Sales:"?></h4>
+                        <h4 class="fw-bold"><?php echo "Sales"?></h4>
                         <h3><?php  ?></h3>
                     </div>
                 </div>

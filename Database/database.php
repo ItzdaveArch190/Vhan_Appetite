@@ -119,6 +119,7 @@
                 product.Product_ID,
                 product.Product_Name,
                 product_price.Product_Price,
+                product.Stock,
                 product.Status
                 FROM product_category
                 JOIN category ON product_category.Category_ID = category.Category_ID
@@ -135,7 +136,8 @@
                 product.Product_ID,
                 product.Product_Name,
                 product_price.Product_Price,
-                product.Status
+                product.Stock,
+                product.Status              
                 FROM product_category
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
@@ -151,6 +153,7 @@
                 product.Product_ID,
                 product.Product_Name,
                 product_price.Product_Price,
+                product.Stock,
                 product.Status
                 FROM product_category
                 JOIN category ON product_category.Category_ID = category.Category_ID
@@ -167,6 +170,7 @@
                 product.Product_ID,
                 product.Product_Name,
                 product_price.Product_Price,
+                product.Stock,
                 product.Status
                 FROM product_category
                 JOIN category ON product_category.Category_ID = category.Category_ID
@@ -186,6 +190,18 @@
                 } catch(PDOException $e){
                 throw $e;
             }
+        }
+
+        function totalProduct(){
+            $con = $this->opencon();
+            return $con->query("SELECT COUNT(*) AS totalproduct 
+                                FROM `product_category` 
+                                WHERE product_category.Category_ID = 1")->fetchAll();
+        }
+
+
+        function fetchStaff_Income(){
+            $con = $this->opencon();
         }
 
 

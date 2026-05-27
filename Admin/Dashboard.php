@@ -130,13 +130,13 @@
         </div>
 
         <div class="d-grid gap-2 col-10 mx-auto">
-            <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk</button>
-            <button onclick="toManageMenu()" class="btn custom-btn" type="button">Manage Menu</button>
-            <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
-            <button onclick="toProducts()" class="btn custom-btn" type="submit">Products</button>
-            <button class="btn custom-btn" type="submit">Sales Report</button>
-            <button class="btn custom-btn" type="submit">Payroll records</button>
-            <button onclick="toStaffs()" class="btn custom-btn" type="submit">Monitor Staff</button>
+                <button onclick="toDashboard()" class="btn custom-btn" type="submit">Frontdesk</button>
+                <button class="btn custom-btn" type="submit" onclick="toManageMenu()">Manage Menu</button>
+                <button onclick="toAttendance()" class="btn custom-btn" type="submit">Attendance Summary</button>
+                <button onclick="toProducts()" class="btn custom-btn" type="submit">Products</button>
+                <button class="btn custom-btn" type="submit">Sales Report</button>
+                <button class="btn custom-btn" type="submit">Payroll records</button>
+                <button onclick="toStaffs()" class="btn custom-btn" type="submit">Monitor Staff</button>
         </div>
 
         <!-- From Uiverse.io by vinodjangid07 --> 
@@ -210,17 +210,12 @@
             </div>
         </div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                <h6>LOW STOCK</h6>
-                <h2 class="fw-bold">0.00</h2>
-            </div>
-        </div>
+        
     </div>
 </div>
 
 <div class="container-fluid px-4 mt-4">
-    <div class="row">
+    <div class="row d-flex justify-content-center">
         <div class="col-12">
             <div class="card shadow-sm border-0 p-5">
                     <h5 class="fw-bold">Top Products</h5>
@@ -259,4 +254,29 @@
 </body>
 
 <script src="window.js"></script>
+<script>
+    function toManageMenu(){
+    window.location.href = "ManageMenu.php";
+}
+
+function toAttendance(){
+    window.location.href ="CheckAttendance.php";
+}
+
+function toDashboard(){
+    window.location.href = "Dashboard.php";
+}
+function toProducts(){
+    window.location.href = "ViewProducts.php";
+}
+
+function toStaffs(){
+    window.location.href = "MonitorStaff.php";
+}
+
+function toSalesReport(){
+    window.location.href = "DSR.php";
+}
+
+</script>
 </html>
