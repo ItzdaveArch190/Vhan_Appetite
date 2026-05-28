@@ -1,5 +1,23 @@
 <?php 
-    session_start();
+    require_once('auth.php');
+    require_once('../Database/database.php');
+    require_once('sidebar.php');
+    $con = new Database();
+
+
+    if(isset($_POST['confirmOrder'])){
+        try{
+            $con->placeOrder($_SESSION['user_id'], $_SESSION['cart'] ?? [], 1);
+            $_SESSION['cart'] = [];
+            $_SESSION['success_message'] = 'Order has been confirmed successfully.';
+            header("Location: confirmOrder.php");
+            exit();
+        } catch(Exception $e){
+            $_SESSION['error_message'] = $e->getMessage();
+            header("Location: Checkout.php");
+            exit();
+        }
+    }
 
 
     
@@ -19,41 +37,17 @@
     </style>
 </head>
 <body>
-
-
-<div class="sidebar bg-success text-white">
-        <div class="sidebar-header m-2 b-7 pt-1 text-center">
-
-            <div class="d-flex flex-column justify-content-center gap-3 px-3 pt-5">
-                <div class=" profile-container w-auto">
-                    <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
-                </div>
-                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
-            </div>
-
-            <div class="business-name-divider">
-                <div class="col-sm-7 text-center">
-                    <span class="owner-name">Vahn Appetite</span>
-                </div>
-            </div>
-            
-        </div>
-
-        <div class="d-grid gap-2 col-10 mx-auto">
-            <button onclick="frontDesk()" class="btn custom-btn" type="submit">Frontdesk</button>
-            <button onclick="Menu()" class="btn custom-btn" type="button">Menu</button>
-            <button onclick="Gocheckout()" class="btn custom-btn" type="button">Checkout</button>
-            <button onclick="completedOrders()" class="btn custom-btn" type="button">Completed Orders</button>
-            <button onclick="attendance()" class="btn custom-btn" type="submit">Attendance</button>
-        </div>
-
-        <div class="text-start ms-3 text-white mb-5">
-            <button type="button" class="btn logout-btn btn-warning"><ion-icon name="log-out-outline"></ion-icon></button>
-        </div>
-    </div>
-</div>  
+<div class="d-flex vh-100">
+    <?php renderStaffSidebar(); ?>
 
     <main class="" >
+
+    <?php if(isset($_SESSION['error_message'])){ ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php echo $_SESSION['error_message']; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php unset($_SESSION['error_message']); } ?>
 
     <div class="row w-100 p-3">
         
@@ -103,7 +97,7 @@
                     </tbody>
                 </table>
                 
-                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
                         Confirm Order
                     </button>
                     
@@ -122,11 +116,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    This order will be submitted as paid (Cash). Continue?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Confirm Order</button>
+                    <form method="POST">
+                        <button type="submit" name="confirmOrder" class="btn btn-primary">Confirm Order</button>
+                    </form>
                 </div>
                 </div>
             </div>
@@ -134,6 +130,8 @@
 </div>
 
     </main>
+
+</div>
 
 </body>
 <script src="../functions/window.js"></script>

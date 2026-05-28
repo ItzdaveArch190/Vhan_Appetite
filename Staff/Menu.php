@@ -1,7 +1,9 @@
 <?php 
-    session_start();
+    require_once('auth.php');
     require_once("../Database/database.php");
+    require_once('sidebar.php');
     $con = new Database();
+
 
     $Burger_PriceLists = $con->getBurger_PriceList();
     $Hotdog_PriceLists = $con->getHotdog_PriceList();
@@ -44,11 +46,10 @@
     }
 
     unset($item);
-    
+
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
-
 
 if(isset($_POST['remove'])){
 
@@ -72,7 +73,6 @@ if(isset($_POST['remove'])){
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -148,11 +148,10 @@ if(isset($_POST['remove'])){
             padding-right:10px;
         }
         main{
-
-        margin-left: 250px;
-        padding: 20px;
-        padding-top: 120px;
-        min-height: 100vh;
+            margin-left: 250px;
+            padding: 20px;
+            padding-top: 120px;
+            min-height: 100vh;
         }
 
         body{
@@ -160,7 +159,6 @@ if(isset($_POST['remove'])){
         }
 
         .nav-con{
-            
             position: fixed;
             top: 30px;
             left: 250px;   
@@ -168,7 +166,6 @@ if(isset($_POST['remove'])){
             display: flex;
             justify-content: center;
             z-index:999;
-            
         }
 
         nav{
@@ -305,38 +302,8 @@ if(isset($_POST['remove'])){
     </style>
 </head>
 <body>
-
-
-    <div class="sidebar bg-success text-white">
-        <div class="sidebar-header m-2 b-7 pt-1 text-center">
-
-            <div class="d-flex flex-column justify-content-center gap-3 px-3 pt-5">
-                <div class=" profile-container w-auto">
-                    <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
-                </div>
-                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
-            </div>
-
-            <div class="business-name-divider">
-                <div class="col-sm-7 text-center">
-                    <span class="owner-name">Vahn Appetite</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-grid gap-2 col-10 mx-auto">
-            <button onclick="frontDesk()" class="btn custom-btn" type="submit">Frontdesk</button>
-            <button onclick="Menu()" class="btn custom-btn" type="button">Menu</button>
-            <button onclick="Gocheckout()" class="btn custom-btn" type="button">Checkout</button>
-            <button onclick="completedOrders()" class="btn custom-btn" type="button">Completed Orders</button>
-            <button onclick="attendance()" class="btn custom-btn" type="submit">Attendance</button>
-        </div>
-
-        <div class="text-start ms-3 text-white mb-5">
-            <button type="button" class="btn logout-btn btn-warning"><ion-icon name="log-out-outline"></ion-icon></button>
-        </div>
-    </div>
-</div> 
+<div class="d-flex vh-100">
+    <?php renderStaffSidebar(); ?>
 
 <div class="nav-con">
     <nav>

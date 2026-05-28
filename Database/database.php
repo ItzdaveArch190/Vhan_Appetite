@@ -4,8 +4,8 @@
             return new PDO(
                 'mysql:host=localhost;
                 dbname=vhan_appetite',
-                username:'root',
-                password: ''
+                'root',
+                ''
             );
         }
 
@@ -197,6 +197,110 @@
             return $con->query("SELECT COUNT(*) AS totalproduct 
                                 FROM `product_category` 
                                 WHERE product_category.Category_ID = 1")->fetchAll();
+        }
+
+        function placeOrder($employeeID, $cart, $paymentMethodID = 1){
+            $con = $this->opencon();
+
+            if(empty($cart)){
+                throw new Exception('Cart is empty');
+            }
+
+            try{
+                $con->beginTransaction();
+
+                $totalQuantity = 0;
+                $totalAmount = 0;
+
+                $checkStock = $con->prepare("SELECT Stock FROM product WHERE Product_ID = ? FOR UPDATE");
+
+                foreach($cart as $item){
+                    $quantity = (int)$item['quantity'];
+                    $price = (float)$item['price'];
+                    $subtotal = $quantity * $price;
+
+                    $checkStock->execute([$item['id']]);
+                    $stockResult = $checkStock->fetch(PDO::FETCH_ASSOC);
+
+                    if(!$stockResult || (int)$stockResult['Stock'] < $quantity){
+                        throw new Exception('Insufficient stock for one or more items.');
+                    }
+
+                    $totalQuantity += $quantity;
+                    $totalAmount += $subtotal;
+                }
+
+                $insertOrder = $con->prepare("INSERT INTO orders (Employee_ID, Order_Quantity) VALUES (?, ?)");
+                $insertOrder->execute([$employeeID, $totalQuantity]);
+                $orderID = $con->lastInsertId();
+
+                $insertOrderItem = $con->prepare("INSERT INTO order_item (Order_ID, Product_ID, Order_Subtotal) VALUES (?, ?, ?)");
+                $updateStock = $con->prepare("UPDATE product SET Stock = Stock - ? WHERE Product_ID = ?");
+
+                foreach($cart as $item){
+                    $quantity = (int)$item['quantity'];
+                    $price = (float)$item['price'];
+                    $subtotal = $quantity * $price;
+
+                    for($i = 0; $i < $quantity; $i++){
+                        $insertOrderItem->execute([$orderID, $item['id'], $price]);
+                    }
+
+                    $updateStock->execute([$quantity, $item['id']]);
+                }
+
+                $insertPayment = $con->prepare("INSERT INTO payment (Payment_Method_ID, Order_ID, Payment_Amount) VALUES (?, ?, ?)");
+                $insertPayment->execute([$paymentMethodID, $orderID, $totalAmount]);
+
+                $insertSalesReport = $con->prepare("INSERT INTO sales_report (Employee_ID, Order_ID, Total_amount) VALUES (?, ?, ?)");
+                $insertSalesReport->execute([$employeeID, $orderID, $totalAmount]);
+
+                $con->commit();
+                return $orderID;
+            } catch(PDOException $e){
+                if($con->inTransaction()){
+                    $con->rollBack();
+                }
+                throw $e;
+            } catch(Exception $e){
+                if($con->inTransaction()){
+                    $con->rollBack();
+                }
+                throw $e;
+            }
+        }
+
+        function getCompletedOrdersByEmployee($employeeID){
+            $con = $this->opencon();
+            $stmt = $con->prepare("SELECT
+                orders.Order_ID,
+                orders.Order_Quantity,
+                sales_report.Total_amount,
+                DATE_FORMAT(sales_report.SR_Date, '%M %d %Y %l:%i %p') AS Completed_Date,
+                payment_method.Payment_Method
+            FROM sales_report
+            JOIN orders ON sales_report.Order_ID = orders.Order_ID
+            LEFT JOIN payment ON orders.Order_ID = payment.Order_ID
+            LEFT JOIN payment_method ON payment.Payment_Method_ID = payment_method.Payment_Method_ID
+            WHERE sales_report.Employee_ID = ?
+            ORDER BY sales_report.SR_Date DESC");
+            $stmt->execute([$employeeID]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        function getCompletedOrderItems($orderID){
+            $con = $this->opencon();
+            $stmt = $con->prepare("SELECT
+                product.Product_Name,
+                COUNT(order_item.Order_Item_ID) AS Qty,
+                SUM(order_item.Order_Subtotal) AS Item_Total
+            FROM order_item
+            JOIN product ON order_item.Product_ID = product.Product_ID
+            WHERE order_item.Order_ID = ?
+            GROUP BY order_item.Product_ID, product.Product_Name
+            ORDER BY product.Product_Name ASC");
+            $stmt->execute([$orderID]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
 

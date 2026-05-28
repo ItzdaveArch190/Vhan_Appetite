@@ -1,7 +1,12 @@
 <?php
-    session_start();
+    require_once('auth.php');
     require_once('../Database/database.php');
+    require_once('sidebar.php');
     $con = new Database();
+
+
+    $employeeID = $_SESSION['user_id'];
+    $completedOrders = $con->getCompletedOrdersByEmployee($employeeID);
 
 ?>
 <!DOCTYPE html>
@@ -34,35 +39,6 @@
             background-color:#E69B1A;
             height: 50px;
         }
-        .custom-btn:hover{
-            background-color:#BC7F15;
-        }
-
-        .logout-btn{
-            height: 50px;
-            width: 100px;
-        }
-        #round-profile{
-            
-            height: 100px;
-            width: 100px;
-            border-radius:50px;
-            border: none;
-            margin:0;
-            
-        }
-        .business-name-divider{
-            width:auto;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            flex-direction:row;
-            margin:0;
-        
-        }
-        .title{
-            margin:0;
-        }
         .sidebar-header{
             padding-left: 10px;
             padding-right:10px;
@@ -89,7 +65,8 @@
                 <div class=" profile-container w-auto">
                     <img id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
                 </div>
-                <h3 class="title"><?php echo $_SESSION['username']; ?></h3>
+                <h3 class="title"><?php echo $_SESSION['username'] ?? ''; ?></h3>
+                    <h3 class="title"><?php echo staffUsername(); ?></h3>
             </div>
 
             <div class="business-name-divider">
@@ -116,6 +93,13 @@
 
     <main class="" >
 
+        <?php if(isset($_SESSION['success_message'])){ ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['success_message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php unset($_SESSION['success_message']); } ?>
+
         <div class="row">
             <div class="col">
                 <div class="card text-center p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
@@ -124,7 +108,51 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col">
+                <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                    <table class="table table-hover text-center align-middle">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Items</th>
+                                <th>Quantity</th>
+                                <th>Payment</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if(empty($completedOrders)){ ?>
+                                <tr>
+                                    <td colspan="6">No completed orders yet.</td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach($completedOrders as $order){ ?>
+                                <?php $orderItems = $con->getCompletedOrderItems($order['Order_ID']); ?>
+                                <tr>
+                                    <td><?php echo $order['Order_ID']; ?></td>
+                                    <td class="text-start">
+                                        <?php foreach($orderItems as $item){ ?>
+                                            <div><?php echo $item['Product_Name']; ?> x<?php echo $item['Qty']; ?></div>
+                                        <?php } ?>
+                                    </td>
+                                    <td><?php echo $order['Order_Quantity']; ?></td>
+                                    <td><?php echo !empty($order['Payment_Method']) ? $order['Payment_Method'] : 'Cash'; ?></td>
+                                    <td><?php echo $order['Total_amount']; ?></td>
+                                    <td><?php echo $order['Completed_Date']; ?></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </main>
+
+</div>
 
 </body>
 <script src="../functions/window.js"></script>
