@@ -107,35 +107,37 @@
         font-size: 1.1rem;
     }
 </style>
-<aside class="app-sidebar sidebar text-white">
-    <div class="app-sidebar__brand text-center">
-        <div class="app-sidebar__eyebrow">Staff Panel</div>
-        <div class="d-flex flex-column justify-content-center align-items-center gap-2">
-            <div class="profile-container w-auto">
-                <img class="app-sidebar__profile" id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
+<div>
+    <aside class="app-sidebar sidebar text-white">
+        <div class="app-sidebar__brand text-center">
+            <div class="app-sidebar__eyebrow">Staff Panel</div>
+            <div class="d-flex flex-column justify-content-center align-items-center gap-2">
+                <div class="profile-container w-auto">
+                    <img class="app-sidebar__profile" id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
+                </div>
+                <h3 class="app-sidebar__title"><?php echo staffUsername(); ?></h3>
             </div>
-            <h3 class="app-sidebar__title"><?php echo staffUsername(); ?></h3>
+
+            <div class="business-name-divider mt-2">
+                <span class="owner-name">Vahn Appetite</span>
+            </div>
         </div>
 
-        <div class="business-name-divider mt-2">
-            <span class="owner-name">Vahn Appetite</span>
+        <div class="app-sidebar__panel">
+            <div class="app-sidebar__nav">
+                <button onclick="frontDesk()" class="btn custom-btn" type="button">Frontdesk</button>
+                <button onclick="Menu()" class="btn custom-btn" type="button">Menu</button>
+                <button onclick="Gocheckout()" class="btn custom-btn" type="button">Checkout</button>
+                <button onclick="completedOrders()" class="btn custom-btn" type="button">Completed Orders</button>
+                <button onclick="attendance()" class="btn custom-btn" type="button">Attendance</button>
+            </div>
         </div>
-    </div>
 
-    <div class="app-sidebar__panel">
-        <div class="app-sidebar__nav">
-            <button onclick="frontDesk()" class="btn custom-btn" type="button">Frontdesk</button>
-            <button onclick="Menu()" class="btn custom-btn" type="button">Menu</button>
-            <button onclick="Gocheckout()" class="btn custom-btn" type="button">Checkout</button>
-            <button onclick="completedOrders()" class="btn custom-btn" type="button">Completed Orders</button>
-            <button onclick="attendance()" class="btn custom-btn" type="button">Attendance</button>
+        <div class="app-sidebar__footer">
+            <button type="button" class="logout-btn"><ion-icon name="log-out-outline"></ion-icon></button>
         </div>
-    </div>
-
-    <div class="app-sidebar__footer">
-        <button type="button" class="logout-btn"><ion-icon name="log-out-outline"></ion-icon></button>
-    </div>
-</aside>
+    </aside>
+</div>
 <?php
     }
 ?>

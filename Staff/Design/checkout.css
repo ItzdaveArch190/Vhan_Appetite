@@ -56,25 +56,20 @@
             padding-right:10px;
         }
         main{
-            margin-left: 250px;
+            
             width:100%;
             display:flex;
             justify-content:center;
             
             
         }
-
         body{
             margin:0;
         }
 
         .heading{
-            position:fixed;
             
-            margin-top: 40px !important;
-            width: 81%;
-            background-color:#E69B1A !important;
-            color: white;
+            color: black;
             font-family:'Stack Sans Headline', sans-serif;
             font-family: "Stack Sans Headline", sans-serif;
             font-optical-sizing: auto;
