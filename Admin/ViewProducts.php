@@ -13,7 +13,7 @@
         $matches = glob($base);
         if(!$matches) return '';
         $file = $matches[0];
-        $rel = str_replace(__DIR__ . '/../', '', $file);
+        $rel = str_replace(__DIR__ . '/../', '../', $file);
         return $rel;
     }
 ?>
@@ -190,7 +190,7 @@
                 modal = document.createElement('div'); modal.id='vpInlineEditModal'; modal.className='modal fade'; modal.tabIndex='-1'; modal.innerHTML = `
                 <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit Product</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <form id="vpEditForm" enctype="multipart/form-data">
+                    <form id="vpEditForm" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="edit_product_id" id="vp_edit_product_id">
                         <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="edit_product_name" id="vp_edit_product_name" required></div>
                         <div class="row g-2"><div class="col-md-4"><label class="form-label">Price</label><input class="form-control" name="edit_product_price" id="vp_edit_product_price" required></div>
