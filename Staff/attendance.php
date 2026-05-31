@@ -71,6 +71,13 @@
         body{
             margin:0;
         }
+
+        .scrollable-box{
+            overflow-y:scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+
     </style>
 </head>
 <body>
@@ -98,15 +105,36 @@
                         <p class="card-text">Start your day now!.</p>
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="button">Time In</button>
-                            <button class="btn btn-primary" <?php ?> type="button">Log out</button>
+                            <form>
+                                <button id="timein" class="btn btn-primary" name="log-in" type="button">Time In</button>
+                                <button id="timeout" class="btn btn-primary" name="logout" type="button" disabled="true">Log out</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <script>
+                const timeIn = document.getElementById('timein');
+                const timeout = document.getElementById('timeout');
+
+                //disabled will be set to false once this triggered
+                timeIn.addEventListener("click", ()=> {
+                    timeout.disabled = false;
+                    timeout.focus();
+                    
+                    timeout.addEventListener("click", ()=>{
+                        timeIn.disabled = true;
+                        timeIn.focus();
+                    });
+                });
+
+                
+            </script>
+
+                <!--    Recent schedule   -->
             <div class="col">
-                <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                <div class="card scrollable-box shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                     <table class="table table-success table-hover text-center">
                         <thead>
                             <tr>
