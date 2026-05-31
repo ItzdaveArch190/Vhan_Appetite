@@ -309,6 +309,167 @@
             $con = $this->opencon();
         }
 
+        function AddProduct($name, $price, $stock, $status, $categoryID){
+            $con = $this->opencon();
+            try{
+                $con->beginTransaction();
+
+                $stmt = $con->prepare("INSERT INTO product (Product_Name, Stock, Status) VALUES (?, ?, ?)");
+                $stmt->execute([$name, $stock, $status]);
+                $productID = $con->lastInsertId();
+
+                $stmtPrice = $con->prepare("INSERT INTO product_price (Product_ID, Product_Price) VALUES (?, ?)");
+                $stmtPrice->execute([$productID, $price]);
+
+                $stmtCat = $con->prepare("INSERT INTO product_category (Product_ID, Category_ID) VALUES (?, ?)");
+                $stmtCat->execute([$productID, $categoryID]);
+
+                $con->commit();
+                return $productID;
+            } catch(PDOEXCEPTION $e){
+                if($con->inTransaction()) $con->rollBack();
+                throw $e;
+            }
+        }
+
+        function getAllProducts(){
+            $con = $this->opencon();
+            try{
+                $sql = "SELECT
+                    p.Product_ID,
+                    p.Product_Name,
+                    MAX(pp.Product_Price) AS Product_Price,
+                    p.Stock,
+                    p.Status,
+                    c.Category_Name,
+                    MAX(pc.Category_ID) AS Category_ID
+                    FROM product p
+                    LEFT JOIN product_category pc ON p.Product_ID = pc.Product_ID
+                    LEFT JOIN category c ON pc.Category_ID = c.Category_ID
+                    LEFT JOIN product_price pp ON p.Product_ID = pp.Product_ID
+                    GROUP BY p.Product_ID
+                    ORDER BY p.Product_ID DESC";
+                $stmt = $con->query($sql);
+                if ($stmt === false) return [];
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e){
+                return [];
+            }
+        }
+
+        function getProductsCount($search = '', $category = null){
+            $con = $this->opencon();
+            $params = [];
+            $sql = "SELECT COUNT(DISTINCT p.Product_ID) FROM product p
+                    LEFT JOIN product_category pc ON p.Product_ID = pc.Product_ID
+                    LEFT JOIN category c ON pc.Category_ID = c.Category_ID
+                    LEFT JOIN product_price pp ON p.Product_ID = pp.Product_ID
+                    WHERE 1=1";
+            if($search){
+                $sql .= " AND LOWER(p.Product_Name) LIKE ?";
+                $params[] = '%' . strtolower($search) . '%';
+            }
+            if($category){
+                $sql .= " AND pc.Category_ID = ?";
+                $params[] = $category;
+            }
+            $stmt = $con->prepare($sql);
+            $stmt->execute($params);
+            return (int)$stmt->fetchColumn();
+        }
+
+        function getProductsPage($limit = 24, $offset = 0, $search = '', $category = null){
+            $con = $this->opencon();
+            $params = [];
+            $sql = "SELECT
+                    p.Product_ID,
+                    p.Product_Name,
+                    MAX(pp.Product_Price) AS Product_Price,
+                    p.Stock,
+                    p.Status,
+                    c.Category_Name,
+                    MAX(pc.Category_ID) AS Category_ID
+                    FROM product p
+                    LEFT JOIN product_category pc ON p.Product_ID = pc.Product_ID
+                    LEFT JOIN category c ON pc.Category_ID = c.Category_ID
+                    LEFT JOIN product_price pp ON p.Product_ID = pp.Product_ID
+                    WHERE 1=1";
+            if($search){
+                $sql .= " AND LOWER(p.Product_Name) LIKE ?";
+                $params[] = '%' . strtolower($search) . '%';
+            }
+            if($category){
+                $sql .= " AND pc.Category_ID = ?";
+                $params[] = $category;
+            }
+            $sql .= " GROUP BY p.Product_ID ORDER BY p.Product_ID DESC LIMIT :limit OFFSET :offset";
+            $stmt = $con->prepare($sql);
+            $index = 1;
+            foreach($params as $value){
+                $stmt->bindValue($index, $value);
+                $index++;
+            }
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        function UpdateProduct($productID, $name, $price, $stock, $status, $categoryID){
+            $con = $this->opencon();
+            try{
+                $con->beginTransaction();
+
+                $stmt = $con->prepare("UPDATE product SET Product_Name = ?, Stock = ?, Status = ? WHERE Product_ID = ?");
+                $stmt->execute([$name, $stock, $status, $productID]);
+
+                // update price
+                $stmtPrice = $con->prepare("INSERT INTO product_price (Product_ID, Product_Price) VALUES (?, ?)");
+                $stmtPrice->execute([$productID, $price]);
+
+                // update category mapping
+                $stmtDel = $con->prepare("DELETE FROM product_category WHERE Product_ID = ?");
+                $stmtDel->execute([$productID]);
+                $stmtCat = $con->prepare("INSERT INTO product_category (Product_ID, Category_ID) VALUES (?, ?)");
+                $stmtCat->execute([$productID, $categoryID]);
+
+                $con->commit();
+                return true;
+            } catch (PDOException $e){
+                if($con->inTransaction()) $con->rollBack();
+                throw $e;
+            }
+        }
+
+        function DeleteProduct($productID){
+            $con = $this->opencon();
+            try{
+                $con->beginTransaction();
+                $stmt1 = $con->prepare("DELETE FROM product_category WHERE Product_ID = ?");
+                $stmt1->execute([$productID]);
+                $stmt2 = $con->prepare("DELETE FROM product_price WHERE Product_ID = ?");
+                $stmt2->execute([$productID]);
+                $stmt3 = $con->prepare("DELETE FROM product WHERE Product_ID = ?");
+                $stmt3->execute([$productID]);
+                $con->commit();
+                return true;
+            } catch (PDOException $e){
+                if($con->inTransaction()) $con->rollBack();
+                throw $e;
+            }
+        }
+
+        function UpdateCategory($categoryID, $name){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("UPDATE category SET Category_Name = ? WHERE Category_ID = ?");
+                $stmt->execute([$name, $categoryID]);
+                return true;
+            } catch(PDOException $e){
+                throw $e;
+            }
+        }
+
 
         
     }
