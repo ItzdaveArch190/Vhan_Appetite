@@ -47,8 +47,8 @@
         }
 
         .container{
-            margin-left: 250px;              /* same as sidebar width */
-            width: calc(100% - 250px);       /* always stay beside sidebar */
+            margin-left: 250px;              
+            width: calc(100% - 250px);       
             padding: 20px;
         }
 

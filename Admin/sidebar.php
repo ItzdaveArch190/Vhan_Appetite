@@ -131,7 +131,7 @@
 
     <div class="app-sidebar__panel">
         <div class="app-sidebar__nav">
-            <button onclick="toDashboard()" class="btn custom-btn" type="button">Frontdesk</button>
+            <button onclick="toDashboard()" class="btn custom-btn" type="button">Dashboard</button>
             <button onclick="toManageMenu()" class="btn custom-btn" type="button">Manage Menu</button>
             <button onclick="toAttendance()" class="btn custom-btn" type="button">Attendance Summary</button>
             <button onclick="toProducts()" class="btn custom-btn" type="button">Products</button>

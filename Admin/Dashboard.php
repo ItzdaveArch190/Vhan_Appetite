@@ -404,13 +404,13 @@
                 </div>
 
                 <div class="quick-actions-grid">
-                    <a href="Frontdesk.php" class="quick-action-btn">
+                    <a href="DSR.php" class="quick-action-btn">
                         <div class="quick-action-btn__icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h-8" /><path d="M4 4h16v16" /><path d="M8 8h8" /></svg>
                         </div>
                         <div class="quick-action-btn__text">
-                            <strong>Frontdesk</strong>
-                            <span>Open the main operations screen</span>
+                            <strong>Sales Report</strong>
+                            <span>View sales reports</span>
                         </div>
                     </a>
 
