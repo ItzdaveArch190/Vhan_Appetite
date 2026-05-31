@@ -19,20 +19,33 @@
     <link rel="stylesheet" href="style.css">
     <title>Burger Section</title>
     <style>
-        
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Stack+Sans+Headline:wght@200..700&display=swap');
+        .container{
+            width: calc(100% - 250px);
+            margin-left:250px;
+        }
+
+        .headings{
+            color: black;
+            font-family:'Stack Sans Headline', sans-serif;
+            font-family: "Stack Sans Headline", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+        }
     </style>
 </head>
 <body>
-  
 
-    <div class="d-flex v-100 justify-content-center">
+
+    
         
     <?php 
         renderStaffSidebar();
     ?>
     
 
-    <main class="" >
+    <div class="container mt-5 me-0" >
         <!--
         <?php if(isset($_SESSION['success_message'])){ ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -44,8 +57,9 @@
 
         <div class="row">
             <div class="col">
-                <div class="card text-center p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                    <h3 class="fw-bold">Completed Orders</h3>
+                <div class="card headings text-center p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                    <h3 class="fw-bold m-0">Completed Orders</h3>
+                    <p class="fw-light m-0">Check previous orders</p>
                 </div>
             </div>
         </div>
@@ -92,10 +106,7 @@
             </div>
         </div>
 
-    
-</main>
-
-</div>
+    </div>
 
 </body>
 <script src="../functions/window.js"></script>

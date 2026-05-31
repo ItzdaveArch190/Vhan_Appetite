@@ -46,6 +46,16 @@
             
         }
 
+        #round-profile{
+            
+            height: 100px;
+            width: 100px;
+            border-radius:50px;
+            border: none;
+            margin:0;
+            
+        }
+
         .container{
             margin-left: 250px;              
             width: calc(100% - 250px);       
@@ -63,13 +73,11 @@
     </style>
 </head>
 <body>
-        <div>
-
-        </div>
+    
         <?php renderStaffSidebar(); ?>
         
 
-    <div class="container  me-0" >
+    <div class="container me-0" >
 
     <?php if(isset($_SESSION['error_message'])){ ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">

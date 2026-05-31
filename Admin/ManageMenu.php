@@ -18,9 +18,8 @@ function findProductImageRel($id){
     $base = __DIR__ . '/../uploads/products/product_'.intval($id).'.*';
     $matches = glob($base);
     if(!$matches) return '';
-    // return relative path from Admin folder
     $file = $matches[0];
-    $rel = str_replace(__DIR__ . '/../', '', $file);
+    $rel = str_replace(__DIR__ . '/../', '../', $file);
     return $rel;
 }
 
@@ -204,24 +203,103 @@ $getProducts = $con->getAllProducts();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <title>Manage Menu</title>
     <style>
-        .dashboard-hero {
-            background: linear-gradient(180deg,#0b1224 0%, #152338 100%);
-            color: #fff;
-            border-radius: .5rem;
-            padding: 1.6rem;
+        body{
+            background:
+                radial-gradient(circle at top right, rgba(15, 138, 82, 0.08), transparent 26%),
+                radial-gradient(circle at bottom left, rgba(227, 151, 16, 0.08), transparent 24%),
+                #f7f8f4;
         }
-        .quick-actions-card { border-radius:.5rem; }
+
+        .manage-shell{
+            margin-left: 350px;
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        .dashboard-hero {
+            border: 0;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,.07), transparent 30%),
+                linear-gradient(145deg, #13181d 0%, #22282e 58%, #1c2126 100%);
+            color: #f8fafc;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+        }
+
+        .dashboard-hero__body{
+            padding: 30px 32px;
+        }
+
+        .dashboard-kicker{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 138, 82, 0.22);
+            color: #e6fff0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .dashboard-title{
+            margin: 14px 0 8px;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            line-height: 1;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+
+        .dashboard-copy{
+            color: rgba(255,255,255,.84);
+            max-width: 700px;
+            margin-bottom: 0;
+        }
+
+        .dashboard-hero__stat{
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 12px 16px;
+            min-width: 180px;
+        }
+
+        .dashboard-hero__stat-label{
+            font-size: .74rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.72);
+            font-weight: 700;
+        }
+
+        .dashboard-hero__stat-value{
+            margin-top: 4px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .quick-actions-card { border-radius: 18px; border: 0; box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08); }
         .quick-action-btn { min-width:160px; }
         .owner-name{ font-family:'Brush Script MT', 'Brush Script Std', cursive; font-size:20px; }
         .sidebar { width:350px; position:fixed; top:0; left:0; height:100vh; }
+
+        @media (max-width: 991px){
+            .manage-shell{
+                margin-left: 0;
+                padding: 18px 14px 28px;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="d-flex vh-100">
     <?php renderAdminSidebar(); ?>
 
-    <main class="w-100" style="margin-left: 350px; margin-top: 30px;">
-        <div class="container-fluid px-4">
+    <main class="w-100 manage-shell">
+        <div class="container-fluid px-0">
             <?php if (!empty($error_message)) : ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <?php echo htmlspecialchars($error_message); ?>
@@ -240,18 +318,21 @@ $getProducts = $con->getAllProducts();
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="dashboard-hero shadow-sm">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="dashboard-hero__copy">
-                                <h2 class="mb-1">Manage Menu</h2>
-                                <p class="text-white-50 mb-2">Add, edit, and categorize menu items for your store.</p>
-                                <div class="mt-2">
-                                    <button onclick="toProducts()" class="btn btn-light btn-sm me-2">View Products</button>
-                                    <button onclick="toManageMenu()" class="btn btn-outline-light btn-sm">Manage Categories</button>
+                        <div class="dashboard-hero__body">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                                <div class="dashboard-hero__copy">
+                                    <span class="dashboard-kicker">Menu Control</span>
+                                    <h1 class="dashboard-title">Manage Menu</h1>
+                                    <p class="dashboard-copy">Add, edit, and organize products and categories from one control panel.</p>
+                                </div>
+                                <div class="dashboard-hero__stat text-end">
+                                    <div class="dashboard-hero__stat-label">Total Categories</div>
+                                    <div class="dashboard-hero__stat-value"><?php echo count($getCategory); ?></div>
                                 </div>
                             </div>
-                            <div class="dashboard-hero__visual text-end">
-                                <div class="text-white-50 small">Total Categories</div>
-                                <div class="h3 fw-bold"><?php echo count($getCategory); ?></div>
+                            <div class="mt-3 d-flex gap-2 flex-wrap">
+                                <button onclick="toProducts()" class="btn btn-light btn-sm">View Products</button>
+                                <button onclick="toManageMenu()" class="btn btn-outline-light btn-sm">Manage Categories</button>
                             </div>
                         </div>
                     </div>
@@ -486,7 +567,7 @@ $getProducts = $con->getAllProducts();
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" id="editProductForm">
+                            <form method="POST" id="editProductForm" enctype="multipart/form-data">
                                 <input type="hidden" name="edit_product_id" id="edit_product_id">
                                 <div class="mb-3">
                                     <label class="form-label">Product Name</label>

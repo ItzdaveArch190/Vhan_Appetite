@@ -2,8 +2,10 @@
     require_once('auth.php');
     require_once('../Database/database.php');
     require_once('sidebar.php');
+    
     $con = new Database();
-    $fetchAttendance = $con->GetAttendance();
+    $fetchAttendance = $con->fetchPreviousAttendance();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,10 +65,8 @@
             padding-left: 10px;
             padding-right:10px;
         }
-        main{
-            margin-left: 350px;
-            padding: 20px;
-            min-height: 100vh;
+        .container{
+            width: calc(100% - 250px);
         }
         body{
             margin:0;
@@ -77,21 +77,39 @@
 <div class="d-flex vh-100">
     <?php renderStaffSidebar(); ?>
 
-    <main class="w-100" style="margin-left: 350px; margin-top: 30px;">
+    <main class="container" style="margin-left: 250px; margin-top: 30px;">
+
         <div class="container w-58 h-30 mt-3 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-            <h3 class="fw-bold">Attendance Summary</h3>
+            <h3 class="fw-bold">Attendance</h3>
             <div class="row">
-                <div class="col">Check Previous staff performance.</div>
+                <div class="col">Check Previous your performance and get Started.</div>
             </div>
         </div>
 
+        
+
         <div class="row w-100 justify-content-center">
-            <div class="col ps-4 offset-md-1">
+
+            <div class="col">
+                <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">Get Started</h5>
+                        <p class="card-text">Start your day now!.</p>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="button">Time In</button>
+                            <button class="btn btn-primary" <?php ?> type="button">Log out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
                 <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                     <table class="table table-success table-hover text-center">
                         <thead>
                             <tr>
-                                <th>Staff</th>
                                 <th>Time In</th>
                                 <th>Time Log</th>
                                 <th>Date</th>
@@ -100,10 +118,9 @@
                         <tbody>
                             <?php foreach($fetchAttendance as $Attendee){ ?>
                             <tr>
-                                <td><?php echo $Attendee['Staff']; ?></td>
-                                <td><?php echo $Attendee['Time_In']; ?></td>
-                                <td><?php echo $Attendee['logout']; ?></td>
-                                <td><?php echo $Attendee['Date']; ?></td>
+                                <td><?php echo $Attendee['Time_in']; ?></td>
+                                <td><?php echo $Attendee['Time_out']; ?></td>
+                                <td><?php echo $Attendee['Attendance_Date']; ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -111,6 +128,7 @@
                 </div>
             </div>
         </div>
+
     </main>
 </div>
 </body>

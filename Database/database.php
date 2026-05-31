@@ -470,6 +470,25 @@
             }
         }
 
+        function fetchPreviousAttendance(){
+            $con =  $this->opencon();
+
+            try{
+                $con->beginTransaction();
+                $staffID = $_SESSION['user_id'];
+                $stmt = $con->prepare("SELECT TIME(attendance.Time_In) AS Time_in, TIME(attendance.Time_Out) AS Time_out, attendance.Attendance_Date FROM `attendance` WHERE attendance.Employee_ID =  ?");
+                $stmt->execute(["$staffID"]);
+                return $stmt;
+            }catch(PDOEXCEPTION $e){
+                if($con->inTransaction()){
+                    if($con->inTransaction()){
+                        $con->rollBack();
+                    }
+                    throw $e;
+                }
+            }
+        }
+
 
         
     }

@@ -83,11 +83,181 @@ if(isset($_POST['remove'])){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="Design/menu.css">
+    
 
     <title>Menu</title>
     
 </head>
+<style>
+     @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Stack+Sans+Headline:wght@200..700&display=swap');
+        html{
+            scroll-behavior: smooth;
+        }
+        
+
+        
+
+        #round-profile{
+            
+            height: 100px;
+            width: 100px;
+            border-radius:50px;
+            border: none;
+            margin:0;
+            
+        }
+        
+        main{
+            width: calc(100% - 250px);
+            padding:20px;
+            margin-left: 250px;
+        }
+
+        body{
+            margin:0;
+        }
+
+        .nav-con{
+            position: fixed;
+            top: 10px;
+            left: 250px;   
+            width: calc(100% - 250px); 
+            display: flex;
+            justify-content: center;
+            z-index:999;
+        }
+
+        nav{
+            width: 100%;
+            max-width: 800px;
+        }
+
+        nav ul{
+            background: linear-gradient(to right, #D16617, #d17a3caa, #d17a3c9c , #c97f4d99);
+            backdrop-filter: blur(5px);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap: 10%;
+            list-style-type: none;
+            min-height: 5em;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 10em;
+            border: 1px solid transprent;
+            box-shadow: 0px 1px 8px 1px rgba(0,0,0,0.5);
+            -webkit-box-shadow: 0px 1px 8px 1px rgba(0,0,0,0.5);
+            -moz-box-shadow: 0px 1px 8px 1px rgba(0,0,0,0.5);
+            
+        }
+        a{
+            text-decoration:none;
+            color: white;
+            
+        }
+        .fa-burger{
+            font-size: 36px;
+            color: white;
+            transition: transform 0.1s ease-in-out;
+        }
+        nav .fa-burger:hover{
+            transform: scale(1.5);
+        }
+
+        .fa-hotdog{
+            font-size: 36px;
+            color: white;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        nav .fa-hotdog:hover{
+            transform: scale(1.5);
+        }
+
+        .fa-drumstick-bite{
+            font-size: 36px;
+            color: white;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        nav .fa-drumstick-bite:hover{
+            transform: scale(1.5);
+        }
+
+        nav .fa-glass-water{
+            font-size: 36px;
+            color: white;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        nav .fa-glass-water:hover{
+            transform: scale(1.5);
+        }
+
+        
+        .custombtn,
+        .custombtn:hover,
+        .custombtn:focus,
+        .custombtn:active {
+            background-color: #E57C12;
+            color: white;
+            border: none;
+        }
+        
+        .custombtn:active {
+            background-color: #bf6710 !important;
+            opacity: 1 !important;
+            box-shadow: none !important;
+            color: white !important;
+        }
+
+        .burger-header,
+        .corndog-header,
+        .hotdog-header,
+        .beverage-header{
+            min-height: 120px;
+            
+            background-size:cover;
+            background-position:top center; 
+            background-repeat: no-repeat;
+            color:white;
+            font-family: "Rubik Dirt", system-ui;
+            font-weight: 900;
+            font-style: oblique;
+            
+        }
+
+        
+
+        .burger-header{
+            background-image: url("./images/background-burger.png");
+        }
+        .corndog-header{
+            background-image:url("./images/corndog-retro.png");
+        }
+        .hotdog-header{
+            background-image: url("./images/hotdog-retro.png");
+        }
+        .beverage-header{
+            background-image: url("./images/beverage-retro.png");
+        }
+
+        .burger-header p,
+        .hotdog-header p,
+        .corndog-header p,
+        .beverage-header p {
+            font-family: "Stack Sans Headline", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+
+        .icons i:hover {
+            transform: none;
+        }
+</style>
 <body>
 <div class="d-flex vh-100">
     <?php renderStaffSidebar(); ?>
@@ -106,7 +276,7 @@ if(isset($_POST['remove'])){
 
 
 <main class="mt-4" >   
-    <div class="fluid-container text-center burger-section" id="burger-header"> 
+    <div class="fluid-container text-center burger-section mt-3" id="burger-header"> 
     <div class="row g-3">
 <!--Dito ang populate ng data-->
 <!--Kasama si column dyan pag nag populate-->
