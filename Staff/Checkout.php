@@ -29,16 +29,47 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=waving_hand" />
-    <link rel="stylesheet" href="Design/checkout.css">
+    
     <title>Burger Section</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Stack+Sans+Headline:wght@200..700&display=swap');
+
+
+        .heading{
+            
+            color: black;
+            font-family:'Stack Sans Headline', sans-serif;
+            font-family: "Stack Sans Headline", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+            
+        }
+
+        .container{
+            margin-left: 250px;              /* same as sidebar width */
+            width: calc(100% - 250px);       /* always stay beside sidebar */
+            padding: 20px;
+        }
+
+        .material-symbols-outlined {
+            color: #DA954B;
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }
     </style>
 </head>
 <body>
-<div class="d-flex vh-100">
-    <?php renderStaffSidebar(); ?>
+        <div>
 
-    <main class="" >
+        </div>
+        <?php renderStaffSidebar(); ?>
+        
+
+    <div class="container  me-0" >
 
     <?php if(isset($_SESSION['error_message'])){ ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -47,16 +78,23 @@
         </div>
     <?php unset($_SESSION['error_message']); } ?>
 
-    <div class="row d-flex flex-column w-100 ">
+
+
+<div class="HeadingBar_section">
+    <div class="row ">
         <div class="col">
-            <div class="heading card text-center p-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+            <div class="heading card m-0 text-center p-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <div class="txt">
-                    <h2 class="">Checkout Stage</h2>
-                    <p class="fw-light">Please Clarify your customers order.</p>
+                    <h2 class="m-0">Checkout Stage</h2>
+                    <p class="fw-light m-0">Please Clarify your customers order.</p>
                 </div>    
             </div>
         </div>
-    
+    </div>
+</div>
+
+<div class="Table_section">
+    <div class="row">
         <div class="col">
             <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <table class="table table-success table-hover text-center">
@@ -95,14 +133,26 @@
                 </tr>
                     </tbody>
                 </table>
-                
                     <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
                         Confirm Order
                     </button>
-                    
             </div>
         </div>
     </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
         <!-- Modal -->
         <div class="modal fade" id="confirm-popUp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -128,9 +178,9 @@
         </div>
 
 
-    </main>
-
 </div>
+
+
 
 </body>
 <script src="../functions/window.js"></script>
