@@ -2,12 +2,13 @@
     require_once('auth.php');
     require_once('../Database/database.php');
     require_once('sidebar.php');
-        $con = new Database();
-        $DailySales =  $con->getTodaySales();
-        $getOrder = $con->getOrder();
-        $get_EMPLOYEE = $con->getAllEmployee();
-    ?>
-    
+
+    $con = new Database();
+    $DailySales = $con->getTodaySales();
+    $getOrder = $con->getOrder();
+    $get_EMPLOYEE = $con->getAllEmployee();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,227 +16,517 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
     <script src="https://unpkg.com/feather-icons"></script>
     <title>Dashboard Panel</title>
     <style>
-        .sidebar {
-            width: 350px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            display: flex;              
-            flex-direction: column;    
-            justify-content: space-between; 
+        body{
+            background:
+                radial-gradient(circle at top right, rgba(15, 138, 82, 0.08), transparent 28%),
+                radial-gradient(circle at bottom left, rgba(227, 151, 16, 0.08), transparent 26%),
+                #f7f8f4;
         }
 
-        
-        .owner-name{
-            font-family:'Brush Script MT', 'Brush Script Std', cursive;
-            font-size: 20px;
-        }
-        .custom-btn{
-            background-color:#E69B1A;
-            height: 50px;
-        }
-        .custom-btn:hover{
-            background-color:#BC7F15;
+        .dashboard-shell{
+            margin-left: 350px;
+            min-height: 100vh;
+            padding: 28px 28px 34px;
         }
 
-        .logout-btn{
-            height: 50px;
-            width: 100px;
+        .dashboard-hero{
+            position: relative;
+            overflow: hidden;
+            border: 0;
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 30%),
+                linear-gradient(145deg, #13181d 0%, #22282e 58%, #1c2126 100%);
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
         }
 
-        /* From Uiverse.io by vinodjangid07 */ 
-    .Btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 45px;
-    height: 45px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-duration: .3s;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
-    background-color: rgb(255, 65, 65);
-    }
+        .dashboard-hero__copy{
+            padding: 36px 34px 34px;
+            color: #f8fafc;
+        }
 
-/* plus sign */
-    .sign {
-    width: 100%;
-    transition-duration: .3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    }
+        .dashboard-hero__copy .dashboard-title{
+            max-width: 560px;
+            color: #ffffff;
+            text-wrap: balance;
+        }
 
-    .sign svg {
-    width: 17px;
-    }
+        .dashboard-hero__copy .dashboard-copy{
+            max-width: 560px;
+            color: rgba(255, 255, 255, 0.86);
+        }
 
-    .sign svg path {
-    fill: white;
-    }
-/* text */
-    .text {
-    position: absolute;
-    right: 0%;
-    width: 0%;
-    opacity: 0;
-    color: white;
-    font-size: 1.2em;
-    font-weight: 600;
-    transition-duration: .3s;
-    }
-/* hover effect on button width */
-    .Btn:hover {
-    width: 125px;
-    border-radius: 40px;
-    transition-duration: .3s;
-    }
+        .dashboard-kicker{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(15, 138, 82, 0.18);
+            color: #e6fff0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
 
-    .Btn:hover .sign {
-    width: 30%;
-    transition-duration: .3s;
-    padding-left: 20px;
-    }
-/* hover effect button's text */
-    .Btn:hover .text {
-    opacity: 1;
-    width: 70%;
-    transition-duration: .3s;
-    padding-right: 10px;
-    }
-/* button click effect*/
-    .Btn:active {
-    transform: translate(2px ,2px);
-    }
+        .dashboard-title{
+            margin: 14px 0 8px;
+            font-size: clamp(2.45rem, 4vw, 4rem);
+            line-height: 0.98;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .dashboard-copy{
+            max-width: 640px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .dashboard-hero__art{
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background:
+                radial-gradient(circle at 70% 20%, rgba(15, 138, 82, 0.24), transparent 28%),
+                radial-gradient(circle at 25% 80%, rgba(227, 151, 16, 0.18), transparent 26%),
+                linear-gradient(180deg, #f5f4ee 0%, #ebe8df 100%);
+        }
+
+        .dashboard-hero__visual{
+            width: min(100%, 340px);
+            padding: 20px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-hero__chart{
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 12px;
+            height: 132px;
+            margin: 0 auto 18px;
+            padding: 18px 20px;
+            border-radius: 24px;
+            background: linear-gradient(180deg, #ffffff 0%, #f3f6f0 100%);
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+        }
+
+        .dashboard-hero__bar{
+            width: 30px;
+            border-radius: 10px 10px 4px 4px;
+            background: linear-gradient(180deg, #0f8a52 0%, #0d6b42 100%);
+            box-shadow: 0 8px 18px rgba(15, 138, 82, 0.22);
+        }
+
+        .dashboard-hero__bar--accent{
+            background: linear-gradient(180deg, #e39710 0%, #c97b05 100%);
+            box-shadow: 0 8px 18px rgba(227, 151, 16, 0.22);
+        }
+
+        .dashboard-hero__bar--muted{
+            background: linear-gradient(180deg, #8aa3c3 0%, #647a95 100%);
+            box-shadow: 0 8px 18px rgba(100, 122, 149, 0.22);
+        }
+
+        .dashboard-hero__summary{
+            display: grid;
+            gap: 12px;
+        }
+
+        .quick-actions-card{
+            border: 0;
+            border-radius: 24px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+            background: linear-gradient(180deg, #ffffff 0%, #fbfaf6 100%);
+        }
+
+        .quick-actions-grid{
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .quick-action-btn{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid #e7ece3;
+            border-radius: 18px;
+            background: #ffffff;
+            text-decoration: none;
+            color: #1f2937;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .quick-action-btn:hover{
+            transform: translateY(-2px);
+            border-color: rgba(15, 138, 82, 0.22);
+            box-shadow: 0 14px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .quick-action-btn__icon{
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 138, 82, 0.10);
+            color: #0d6b42;
+            flex-shrink: 0;
+        }
+
+        .quick-action-btn__text strong{
+            display: block;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .quick-action-btn__text span{
+            display: block;
+            margin-top: 2px;
+            color: #6b7280;
+            font-size: 0.88rem;
+        }
+
+        .dashboard-hero__stat{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+        }
+
+        .dashboard-hero__stat-label{
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .dashboard-hero__stat-value{
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .dashboard-hero__badge{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(15, 138, 82, 0.14);
+            color: #0d6b42;
+            flex-shrink: 0;
+        }
+
+        .dashboard-hero__art .dashboard-hero__stat-label{
+            color: #6b7280;
+        }
+
+        .dashboard-hero__art .dashboard-hero__stat-value{
+            color: #172033;
+        }
+
+        .dashboard-hero__art .dashboard-hero__stat{
+            background: #ffffff;
+        }
+
+        .metric-card,
+        .content-card{
+            border: 0;
+            border-radius: 24px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+        }
+
+        .metric-card{
+            min-height: 152px;
+            background: linear-gradient(180deg, #ffffff 0%, #fafaf7 100%);
+        }
+
+        .metric-label{
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .metric-value{
+            font-size: clamp(2rem, 4vw, 2.65rem);
+            font-weight: 800;
+            color: #1f2937;
+            line-height: 1;
+        }
+
+        .metric-icon{
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 138, 82, 0.12);
+            color: #0d6b42;
+        }
+
+        .section-label{
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #0d6b42;
+        }
+
+        .table thead th{
+            border-top: none;
+            border-bottom: 1px solid #e6e8eb;
+            color: #1f2937;
+        }
+
+        .table tbody tr:last-child td{
+            border-bottom: none;
+        }
+
+        .top-products-wrap{
+            height: 100%;
+        }
+
+        .top-products-list{
+            display: grid;
+            gap: 14px;
+        }
+
+        .top-product-item{
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #f8faf7;
+            border: 1px solid #edf1ea;
+        }
+
+        .top-product-item strong{
+            display: block;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+
+        .top-product-item span{
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 992px){
+            .dashboard-shell{
+                margin-left: 0;
+                padding: 18px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="d-flex min-vh-100">
+        <?php renderAdminSidebar(); ?>
 
-    
-<div class="d-flex vh-100">
-    <?php renderAdminSidebar(); ?>
+        <main class="dashboard-shell w-100">
+            <div class="card dashboard-hero mb-4">
+                <div class="row g-0 align-items-stretch">
+                    <div class="col-lg-8 dashboard-hero__copy">
+                        <div class="dashboard-kicker">Admins Monitoring Dashboard</div>
+                        <h3 class="dashboard-title">Monitor performance, stock, and team execution.</h3>
+                        <p class="dashboard-copy mb-0">
+                            Keep an eye on sales momentum, order flow, and staff count from a cleaner, more focused control center.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 dashboard-hero__art">
+                        <div class="dashboard-hero__visual">
+                            <div class="dashboard-hero__chart" aria-hidden="true">
+                                <div class="dashboard-hero__bar" style="height: 72px;"></div>
+                                <div class="dashboard-hero__bar dashboard-hero__bar--accent" style="height: 48px;"></div>
+                                <div class="dashboard-hero__bar dashboard-hero__bar--muted" style="height: 90px;"></div>
+                                <div class="dashboard-hero__bar" style="height: 58px;"></div>
+                            </div>
 
-        <!-- From Uiverse.io by vinodjangid07 --> 
-<button class="Btn">
-    <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
-    <div class="text">Logout</div>
-</button>
+                            <div class="dashboard-hero__summary">
+                                <div class="dashboard-hero__stat">
+                                    <div>
+                                        <div class="dashboard-hero__stat-label">Daily sales</div>
+                                        <div class="dashboard-hero__stat-value">₱<?php echo number_format((float)$DailySales, 2); ?></div>
+                                    </div>
+                                    <div class="dashboard-hero__badge">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19v-14h3.5a4.5 4.5 0 1 1 0 9h-3.5" /><path d="M18 8h-12" /><path d="M18 11h-12" /></svg>
+                                    </div>
+                                </div>
 
-
-
-    </div>
-
-    <main class="w-100" style="margin-left: 350px; margin-top: 30px;">
-        <div class="heading p-4 text-center">
-        <h3 class="fw-bold">Admins Monitoring Dashboard</h3>
-            <div class="row">
-                <div class="col">
-                    <p class="fw-light">Monitor peformance, stock, and team execution.</p>
+                                <div class="dashboard-hero__stat">
+                                    <div>
+                                        <div class="dashboard-hero__stat-label">Transactions</div>
+                                        <div class="dashboard-hero__stat-value"><?php echo $getOrder; ?></div>
+                                    </div>
+                                    <div class="dashboard-hero__badge">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10" /><path d="M7 12h10" /><path d="M7 17h6" /></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-<div class="container-fluid px-4">
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded text-center">
-                <h6>DAILY SALES</h6>
-                <div class="d-flex justify-content-center align-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        stroke-width="1.50" 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round" 
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-currency-peso">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M8 19v-14h3.5a4.5 4.5 0 1 1 0 9h-3.5" />
-                        <path d="M18 8h-12" /><path d="M18 11h-12" />
-                    </svg>
-                    <h2 class="fw-bold"><?php echo $DailySales; ?></h2>
+            <div class="card quick-actions-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                        <div class="section-label mb-2">Quick Actions</div>
+                        <h5 class="fw-bold mb-0">Shortcuts for the things you use most</h5>
+                    </div>
+                    <span class="text-muted">Jump straight to the next task</span>
+                </div>
+
+                <div class="quick-actions-grid">
+                    <a href="Frontdesk.php" class="quick-action-btn">
+                        <div class="quick-action-btn__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h-8" /><path d="M4 4h16v16" /><path d="M8 8h8" /></svg>
+                        </div>
+                        <div class="quick-action-btn__text">
+                            <strong>Frontdesk</strong>
+                            <span>Open the main operations screen</span>
+                        </div>
+                    </a>
+
+                    <a href="ManageMenu.php" class="quick-action-btn">
+                        <div class="quick-action-btn__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h10" /></svg>
+                        </div>
+                        <div class="quick-action-btn__text">
+                            <strong>Manage Menu</strong>
+                            <span>Edit products and pricing</span>
+                        </div>
+                    </a>
+
+                    <a href="CheckAttendance.php" class="quick-action-btn">
+                        <div class="quick-action-btn__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3l8-8" /><path d="M21 12a9 9 0 1 1-9-9" /></svg>
+                        </div>
+                        <div class="quick-action-btn__text">
+                            <strong>Attendance</strong>
+                            <span>Review staff attendance summary</span>
+                        </div>
+                    </a>
+
+                    <a href="ViewProducts.php" class="quick-action-btn">
+                        <div class="quick-action-btn__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16" /><path d="M6 7l1 14h10l1-14" /><path d="M9 7V4h6v3" /></svg>
+                        </div>
+                        <div class="quick-action-btn__text">
+                            <strong>Products</strong>
+                            <span>Check product inventory quickly</span>
+                        </div>
+                    </a>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded text-center">
-                <h6>Transactions</h6>
-                <h2 class="fw-bold"><?php echo $getOrder;?></h2>
-            </div>
-        </div>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card metric-card p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="metric-label">Daily Sales</div>
+                            <div class="metric-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 19v-14h3.5a4.5 4.5 0 1 1 0 9h-3.5" /><path d="M18 8h-12" /><path d="M18 11h-12" /></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value">₱<?php echo number_format((float)$DailySales, 2); ?></div>
+                        <div class="text-muted mt-2">Tracked from completed sales reports</div>
+                    </div>
+                </div>
 
-        
+                <div class="col-md-6 col-lg-4">
+                    <div class="card metric-card p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="metric-label">Transactions</div>
+                            <div class="metric-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10" /><path d="M7 12h10" /><path d="M7 17h6" /></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value"><?php echo $getOrder; ?></div>
+                        <div class="text-muted mt-2">Orders processed</div>
+                    </div>
+                </div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm border-0 p-3 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                <div class="text-center">
-                    <h6>EMPLOYEES</h6>
-                </div>    
-                    <div class=" d-flex justify-content-center align-items-center gap-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
-                        <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                        <path d="M17 10h2a2 2 0 0 1 2 2v1" />
-                        <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                        <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
-                    </svg>
-                    <div class="">
-                        <h2 class="fw-bold e-2"><?php echo $get_EMPLOYEE;?></h2>
-                    </div>    
+                <div class="col-md-6 col-lg-4">
+                    <div class="card metric-card p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="metric-label">Employees</div>
+                            <div class="metric-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value"><?php echo $get_EMPLOYEE; ?></div>
+                        <div class="text-muted mt-2">Active staff on the roster</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        
-    </div>
-</div>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card content-card p-4 h-100">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div>
+                                <div class="section-label mb-2">Top Products</div>
+                                <h5 class="fw-bold mb-2">Monitor top selling products and the total sold.</h5>
+                            </div>
+                        </div>
 
-<div class="container-fluid px-4 mt-4">
-    <div class="row d-flex justify-content-center">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 p-5">
-                    <h5 class="fw-bold">Top Products</h5>
-                    <p class="fw-light">Monitor Top selling products and the total sold.</p>
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Total Sold</th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="">
-                            <tr>
-                                <td>B1T1 Premium Cheese Burger</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Hungarian Sausage</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <td>B1T1 Double Decker Bacon</td>
-                                <td>5</td>
-                            </tr>
-                        </tbody>
-                </table>
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-end">Total Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>B1T1 Premium Cheese Burger</td>
+                                    <td class="text-end fw-semibold">10</td>
+                                </tr>
+                                <tr>
+                                    <td>Hungarian Sausage</td>
+                                    <td class="text-end fw-semibold">7</td>
+                                </tr>
+                                <tr>
+                                    <td>B1T1 Double Decker Bacon</td>
+                                    <td class="text-end fw-semibold">5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
-</div>
 
-</main>
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../functions/window.js"></script>
+    <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" type="module"></script>
+    <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js" nomodule></script>
 </body>
-
-<script src="../functions/window.js"></script>
 </html>

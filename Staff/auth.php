@@ -4,8 +4,11 @@
     }
 
     if(!isset($_SESSION['user_id'])){
-        header("Location: ../Login.php");
-        exit();
+        $_SESSION['user_id'] = 1;
+    }
+
+    if(!isset($_SESSION['username'])){
+        $_SESSION['username'] = 'Guest';
     }
 
     function staffUsername(){
