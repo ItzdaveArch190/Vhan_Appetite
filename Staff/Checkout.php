@@ -17,12 +17,10 @@
             header("Location: Checkout.php");
             exit();
         }
-    }
-
-
-    
-    
+    }   
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +29,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=waving_hand" />
-    <link rel="stylesheet" href="CheckoutPage/style.css">
+    <link rel="stylesheet" href="Design/checkout.css">
     <title>Burger Section</title>
     <style>
     </style>
@@ -49,16 +47,17 @@
         </div>
     <?php unset($_SESSION['error_message']); } ?>
 
-    <div class="row w-100 p-3">
-        
-        <div class="heading card text-center p-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-            <div class="txt">
-                <h2 class="">Checkout Stage</h2>
-                <p class="fw-light">Please Clarify your customers order.</p>
-            </div>    
+    <div class="row d-flex flex-column w-100 ">
+        <div class="col">
+            <div class="heading card text-center p-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+                <div class="txt">
+                    <h2 class="">Checkout Stage</h2>
+                    <p class="fw-light">Please Clarify your customers order.</p>
+                </div>    
+            </div>
         </div>
-
-        <div class="col ps-4">
+    
+        <div class="col">
             <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                 <table class="table table-success table-hover text-center">
                     <thead>
@@ -103,7 +102,7 @@
                     
             </div>
         </div>
-
+    </div>
         <!-- Modal -->
         <div class="modal fade" id="confirm-popUp" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -127,7 +126,7 @@
                 </div>
             </div>
         </div>
-</div>
+
 
     </main>
 

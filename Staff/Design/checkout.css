@@ -9,7 +9,8 @@
             height: 100vh;
             display: flex;              
             flex-direction: column;    
-            justify-content: space-between; 
+            justify-content: space-between;
+            z-index: 999; 
         }
 
         
@@ -55,13 +56,12 @@
             padding-right:10px;
         }
         main{
-
-        margin-left: 350px;
-        padding: 20px;
-        min-height: 100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
+            margin-left: 250px;
+            width:100%;
+            display:flex;
+            justify-content:center;
+            
+            
         }
 
         body{
@@ -69,7 +69,10 @@
         }
 
         .heading{
-
+            position:fixed;
+            
+            margin-top: 40px !important;
+            width: 81%;
             background-color:#E69B1A !important;
             color: white;
             font-family:'Stack Sans Headline', sans-serif;
@@ -77,6 +80,7 @@
             font-optical-sizing: auto;
             font-weight: 600;
             font-style: normal;
+            
         }
 
         .material-symbols-outlined {
