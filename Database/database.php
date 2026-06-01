@@ -489,7 +489,27 @@
             }
         }
 
+            function insertAttendance($emp_ID, $date, $timein, $timeout) {
+                $con = $this->opencon();
+
+                try{
+                    $con->beginTransaction();
+                    $stmt = $con->prepare("INSERT INTO attendance(Employee_ID, Attendance_Date, Time_In, Time_Out) VALUES(?, ?, ?, ?);");
+                    $stmt->execute([$emp_ID, $date, $timein, $timeout]);
+                    $insert = $con->lastInsertId();
+                    $con->commit();
+                    return $insert;
+                } catch(PDOEXCEPTION $e){
+                    if($con->inTransaction()){
+                        $con->rollBack();
+                    }
+                    throw $e;
+                }
+            }
+
+        }
+
 
         
-    }
+    
 ?>

@@ -5,6 +5,25 @@
     
     $con = new Database();
     $fetchAttendance = $con->fetchPreviousAttendance();
+    
+
+    date_default_timezone_set("Asia/Manila");
+
+    if(isset($_POST['log-in'])){
+        
+
+        $staff_ID = $_SESSION['user_id'];
+        $LogIn = date('H:i A');
+        $_SESSION['TimeIN'] = $LogIn;   
+    }
+
+    if(isset($_POST['logout'])){
+
+        $currentDate = date('Y-m-d');
+        $logOut = date('H:i A');
+        $con->insertAttendance($staff_ID, $currentDate, $_SESSION['TimeIN'], $logOut);
+        $_SESSION['TimeOut'] = $logOut;
+    }
 
 ?>
 <!DOCTYPE html>
@@ -86,6 +105,20 @@
 
     <main class="container" style="margin-left: 250px; margin-top: 30px;">
 
+        <?php if(isset($_POST['log-in'])){ ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo 'Time Check : '. $_SESSION['TimeIN']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php  } ?>
+
+        <?php if(isset($_POST['logout'])) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo 'Time Check : '. $_SESSION['TimeOut']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php  } ?>
+
         <div class="container w-58 h-30 mt-3 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
             <h3 class="fw-bold">Attendance</h3>
             <div class="row">
@@ -106,31 +139,15 @@
 
                         <div class="d-grid gap-2">
                             <form>
-                                <button id="timein" class="btn btn-primary" name="log-in" type="button">Time In</button>
-                                <button id="timeout" class="btn btn-primary" name="logout" type="button" disabled="true">Log out</button>
+                                <button id="timein" class="btn btn-primary" name="log-in"  type="submit">Time In</button>
+                                <button id="timeout" class="btn btn-primary" name="logout" type="submit" disabled="true">Log out</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <script>
-                const timeIn = document.getElementById('timein');
-                const timeout = document.getElementById('timeout');
-
-                //disabled will be set to false once this triggered
-                timeIn.addEventListener("click", ()=> {
-                    timeout.disabled = false;
-                    timeout.focus();
-                    
-                    timeout.addEventListener("click", ()=>{
-                        timeIn.disabled = true;
-                        timeIn.focus();
-                    });
-                });
-
-                
-            </script>
+            
 
                 <!--    Recent schedule   -->
             <div class="col">

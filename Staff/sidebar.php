@@ -113,7 +113,7 @@
             <div class="app-sidebar__eyebrow">Staff Panel</div>
             <div class="d-flex flex-column justify-content-center align-items-center gap-2">
                 <div class="profile-container w-auto">
-                    <img class="app-sidebar__profile" id="round-profile" name="profile" src="../images/Burger (2).png" alt="">
+                    <img class="app-sidebar__profile" id="round-profile" name="profile" src="./images/Burger (2).png" alt="">
                 </div>
                 <h3 class="app-sidebar__title"><?php echo staffUsername(); ?></h3>
             </div>
