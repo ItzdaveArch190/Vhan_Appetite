@@ -2,8 +2,29 @@
     require_once('auth.php');
     require_once('../Database/database.php');
     require_once('sidebar.php');
+    
     $con = new Database();
-    $fetchAttendance = $con->GetAttendance();
+    $fetchAttendance = $con->fetchPreviousAttendance();
+    
+
+    date_default_timezone_set("Asia/Manila");
+
+    if(isset($_POST['log-in'])){
+        
+
+        $staff_ID = $_SESSION['user_id'];
+        $LogIn = date('H:i A');
+        $_SESSION['TimeIN'] = $LogIn;   
+    }
+
+    if(isset($_POST['logout'])){
+
+        $currentDate = date('Y-m-d');
+        $logOut = date('H:i A');
+        $con->insertAttendance($staff_ID, $currentDate, $_SESSION['TimeIN'], $logOut);
+        $_SESSION['TimeOut'] = $logOut;
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,35 +84,77 @@
             padding-left: 10px;
             padding-right:10px;
         }
-        main{
-            margin-left: 350px;
-            padding: 20px;
-            min-height: 100vh;
+        .container{
+            width: calc(100% - 250px);
         }
         body{
             margin:0;
         }
+
+        .scrollable-box{
+            overflow-y:scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+
     </style>
 </head>
 <body>
 <div class="d-flex vh-100">
     <?php renderStaffSidebar(); ?>
 
-    <main class="w-100" style="margin-left: 350px; margin-top: 30px;">
+    <main class="container" style="margin-left: 250px; margin-top: 30px;">
+
+        <?php if(isset($_POST['log-in'])){ ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo 'Time Check : '. $_SESSION['TimeIN']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php  } ?>
+
+        <?php if(isset($_POST['logout'])) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo 'Time Check : '. $_SESSION['TimeOut']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php  } ?>
+
         <div class="container w-58 h-30 mt-3 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-            <h3 class="fw-bold">Attendance Summary</h3>
+            <h3 class="fw-bold">Attendance</h3>
             <div class="row">
-                <div class="col">Check Previous staff performance.</div>
+                <div class="col">Check Previous your performance and get Started.</div>
             </div>
         </div>
 
+        
+
         <div class="row w-100 justify-content-center">
-            <div class="col ps-4 offset-md-1">
+
+            <div class="col">
                 <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">Get Started</h5>
+                        <p class="card-text">Start your day now!.</p>
+
+                        <div class="d-grid gap-2">
+                            <form>
+                                <button id="timein" class="btn btn-primary" name="log-in"  type="submit">Time In</button>
+                                <button id="timeout" class="btn btn-primary" name="logout" type="submit" disabled="true">Log out</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+                <!--    Recent schedule   -->
+            <div class="col">
+                <div class="card scrollable-box shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                     <table class="table table-success table-hover text-center">
                         <thead>
                             <tr>
-                                <th>Staff</th>
                                 <th>Time In</th>
                                 <th>Time Log</th>
                                 <th>Date</th>
@@ -100,10 +163,9 @@
                         <tbody>
                             <?php foreach($fetchAttendance as $Attendee){ ?>
                             <tr>
-                                <td><?php echo $Attendee['Staff']; ?></td>
-                                <td><?php echo $Attendee['Time_In']; ?></td>
-                                <td><?php echo $Attendee['logout']; ?></td>
-                                <td><?php echo $Attendee['Date']; ?></td>
+                                <td><?php echo $Attendee['Time_in']; ?></td>
+                                <td><?php echo $Attendee['Time_out']; ?></td>
+                                <td><?php echo $Attendee['Attendance_Date']; ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -111,6 +173,7 @@
                 </div>
             </div>
         </div>
+
     </main>
 </div>
 </body>

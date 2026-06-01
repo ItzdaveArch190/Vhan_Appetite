@@ -470,7 +470,46 @@
             }
         }
 
+        function fetchPreviousAttendance(){
+            $con =  $this->opencon();
+
+            try{
+                $con->beginTransaction();
+                $staffID = $_SESSION['user_id'];
+                $stmt = $con->prepare("SELECT TIME(attendance.Time_In) AS Time_in, TIME(attendance.Time_Out) AS Time_out, attendance.Attendance_Date FROM `attendance` WHERE attendance.Employee_ID =  ?");
+                $stmt->execute(["$staffID"]);
+                return $stmt;
+            }catch(PDOEXCEPTION $e){
+                if($con->inTransaction()){
+                    if($con->inTransaction()){
+                        $con->rollBack();
+                    }
+                    throw $e;
+                }
+            }
+        }
+
+            function insertAttendance($emp_ID, $date, $timein, $timeout) {
+                $con = $this->opencon();
+
+                try{
+                    $con->beginTransaction();
+                    $stmt = $con->prepare("INSERT INTO attendance(Employee_ID, Attendance_Date, Time_In, Time_Out) VALUES(?, ?, ?, ?);");
+                    $stmt->execute([$emp_ID, $date, $timein, $timeout]);
+                    $insert = $con->lastInsertId();
+                    $con->commit();
+                    return $insert;
+                } catch(PDOEXCEPTION $e){
+                    if($con->inTransaction()){
+                        $con->rollBack();
+                    }
+                    throw $e;
+                }
+            }
+
+        }
+
 
         
-    }
+    
 ?>
