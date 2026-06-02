@@ -35,7 +35,7 @@
         </div>
 
             <div class="row d-flex g-4 p-3 ">
-                <div class="col-2 text-center">
+                <div class="col text-center">
                     <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
                         <h4 class="fw-bold">Total Order</h4>
                         <h3><?php echo $gettotalOrder; ?></h3>

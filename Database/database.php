@@ -104,7 +104,7 @@
         function staffLogin(){
             $con = $this->opencon();
             return $con->query("SELECT employee.Owner_ID,
-                employee.Employee_ID,
+                Employee_ID,
                 CONCAT(employee.Emp_FN,' ',employee.Emp_LN) AS username,
                 employee.Password,
                 employee.Email,
