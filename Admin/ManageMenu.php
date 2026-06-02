@@ -8,7 +8,6 @@ $con = new Database();
 $getCategory = $con->viewCategory();
 $getProducts = $con->getAllProducts();
 
-// prepare uploads directory
 $uploadDir = __DIR__ . '/../uploads/products/';
 if (!is_dir($uploadDir)) {
     @mkdir($uploadDir, 0755, true);
