@@ -207,6 +207,7 @@ $latestDate = $totalLogs > 0 ? $fetchAttendance[$totalLogs - 1]['Date'] : 'No re
                 </div>
             </div>
         </div>
+        
     </main>
 </div>
 
