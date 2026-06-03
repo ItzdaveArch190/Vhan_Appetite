@@ -14,6 +14,10 @@ function toProducts(){
     window.location.href = "ViewProducts.php";
 }
 
+function toSalesReport(){
+    window.location.href = "DSR.php";
+}
+
 function toStaffs(){
     window.location.href = "MonitorStaff.php";
 }

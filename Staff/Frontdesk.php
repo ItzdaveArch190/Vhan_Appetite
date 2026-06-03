@@ -8,6 +8,7 @@
     $employeeID = $_SESSION['user_id'];
 
     $gettotalOrder = $con->getTotalOrders($employeeID);
+    $getSales = $con->fetchStaff_Income($employeeID);
 
 ?>
 <!DOCTYPE html>
@@ -47,7 +48,7 @@
                 <div class="col-md-4 text-center">
                     <div class="card shadow-sm p-3">
                         <h5>Sales</h5>
-                        <h3>₱0.00</h3>
+                        <h3><?php echo '₱' . number_format($getSales ?? 0, 2); ?></h3>
                     </div>
                 </div>
 

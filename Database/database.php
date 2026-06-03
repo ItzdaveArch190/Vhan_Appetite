@@ -71,6 +71,35 @@
                 ORDER BY attendance.Attendance_Date ASC
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
+        
+            function insertAttendance($employeeID, $date, $timeIn, $timeOut){
+                $con = $this->opencon();
+                try{
+                    $stmt = $con->prepare("INSERT INTO attendance (Employee_ID, Attendance_Date, Time_In, Time_Out) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$employeeID, $date, $timeIn, $timeOut]);
+                    return $con->lastInsertId();
+                } catch(PDOException $e){
+                    throw $e;
+                }
+            }
+        
+            function fetchPreviousAttendance($employeeID){
+                $con = $this->opencon();
+                try{
+                    $stmt = $con->prepare("SELECT 
+                        TIME_FORMAT(Time_In, '%h:%i %p') AS Time_in,
+                        TIME_FORMAT(Time_Out, '%h:%i %p') AS Time_out,
+                        DATE_FORMAT(Attendance_Date, '%M %d %Y') AS Attendance_Date
+                        FROM attendance
+                        WHERE Employee_ID = ?
+                        ORDER BY Attendance_Date DESC
+                        LIMIT 30");
+                    $stmt->execute([$employeeID]);
+                    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                } catch(PDOException $e){
+                    return [];
+                }
+            }
 
         function deleteCategory($categoryID){
             $con = $this->opencon();
@@ -104,13 +133,63 @@
         function staffLogin(){
             $con = $this->opencon();
             return $con->query("SELECT employee.Owner_ID,
-                Employee_ID,
+                employee.Employee_ID,
                 CONCAT(employee.Emp_FN,' ',employee.Emp_LN) AS username,
                 employee.Password,
                 employee.Email,
                 employee.Phone_Number FROM employee
                 ")->fetchAll(PDO::FETCH_ASSOC);
                 
+        }
+
+        function loginUser($email, $password){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT * FROM tbl_user WHERE email = ? LIMIT 1");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($user){
+                    if(!empty($user['password']) && password_verify($password, $user['password'])) return $user;
+                    if($password === $user['password']) return $user;
+                }
+
+                // fallback to owner table (owners use bcrypt-hashed passwords in SQL dump)
+                $stmt2 = $con->prepare("SELECT Owner_ID, Owner_FN, Owner_LN, Email, Password FROM owner WHERE Email = ? LIMIT 1");
+                $stmt2->execute([$email]);
+                $owner = $stmt2->fetch(PDO::FETCH_ASSOC);
+                if($owner){
+                    if(!empty($owner['Password']) && password_verify($password, $owner['Password'])){
+                        // map to tbl_user-like structure expected by admin login
+                        return [
+                            'id_user' => $owner['Owner_ID'],
+                            'first_name' => $owner['Owner_FN'],
+                            'last_name' => $owner['Owner_LN'],
+                            'email' => $owner['Email'],
+                            'account_type' => 'admin'
+                        ];
+                    }
+                }
+
+                return false;
+            } catch(PDOException $e){
+                return false;
+            }
+        }
+
+        function getPaymentMethodId($methodName){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT Payment_Method_ID FROM payment_method WHERE Payment_Method = ? LIMIT 1");
+                $stmt->execute([$methodName]);
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($res) return (int)$res['Payment_Method_ID'];
+                // fallback to Cash id if exists
+                $stmt2 = $con->query("SELECT Payment_Method_ID FROM payment_method WHERE Payment_Method = 'Cash' LIMIT 1");
+                $r2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+                return $r2 ? (int)$r2['Payment_Method_ID'] : 1;
+            } catch(PDOException $e){
+                return 1;
+            }
         }
 
 
@@ -126,8 +205,7 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                    WHERE product_category.Category_ID = 1
-                    GROUP BY product.Product_ID
+                HAVING product_category.Category_ID = 1 
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -144,8 +222,7 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                    WHERE product_category.Category_ID = 2
-                    GROUP BY product.Product_ID
+                HAVING product_category.Category_ID = 2 
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -162,8 +239,7 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                    WHERE product_category.Category_ID = 3
-                    GROUP BY product.Product_ID
+                HAVING product_category.Category_ID = 3
             ")->fetchAll();
         }
 
@@ -180,8 +256,7 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                    WHERE product_category.Category_ID = 4 
-                    GROUP BY product.Product_ID
+                HAVING product_category.Category_ID = 4 
             ")->fetchAll();
         }
 
@@ -309,8 +384,16 @@
         }
 
 
-        function fetchStaff_Income(){
+        function fetchStaff_Income($employeeID){
             $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT SUM(Total_amount) AS total FROM sales_report WHERE Employee_ID = ?");
+                $stmt->execute([$employeeID]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $result['total'] ?? 0;
+            } catch(PDOException $e){
+                throw $e;
+            }
         }
 
         function AddProduct($name, $price, $stock, $status, $categoryID){
@@ -474,46 +557,7 @@
             }
         }
 
-        function fetchPreviousAttendance(){
-            $con =  $this->opencon();
-
-            try{
-                $con->beginTransaction();
-                $staffID = $_SESSION['user_id'];
-                $stmt = $con->prepare("SELECT TIME(attendance.Time_In) AS Time_in, TIME(attendance.Time_Out) AS Time_out, attendance.Attendance_Date FROM `attendance` WHERE attendance.Employee_ID =  ?");
-                $stmt->execute(["$staffID"]);
-                return $stmt;
-            }catch(PDOEXCEPTION $e){
-                if($con->inTransaction()){
-                    if($con->inTransaction()){
-                        $con->rollBack();
-                    }
-                    throw $e;
-                }
-            }
-        }
-
-            function insertAttendance($emp_ID, $date, $timein, $timeout) {
-                $con = $this->opencon();
-
-                try{
-                    $con->beginTransaction();
-                    $stmt = $con->prepare("INSERT INTO attendance(Employee_ID, Attendance_Date, Time_In, Time_Out) VALUES(?, ?, ?, ?);");
-                    $stmt->execute([$emp_ID, $date, $timein, $timeout]);
-                    $insert = $con->lastInsertId();
-                    $con->commit();
-                    return $insert;
-                } catch(PDOEXCEPTION $e){
-                    if($con->inTransaction()){
-                        $con->rollBack();
-                    }
-                    throw $e;
-                }
-            }
-
-        }
-
 
         
-    
+    }
 ?>
