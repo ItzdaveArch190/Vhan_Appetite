@@ -301,7 +301,11 @@ if(isset($_POST['remove'])){
                         <span class="badge text-bg-primary"><?php echo $burger['Status'];?></span>
                     </button>
                 </div>
-            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+            <?php
+                $matches = glob(__DIR__ . '/../uploads/products/product_' . $burger['Product_ID'] . '.*');
+                $imgRel = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '../images/Burger (2).png';
+            ?>
+            <img src="<?php echo $imgRel; ?>" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
                 <h6 class="card-title mt-1"><?php echo $burger['Product_Name']; ?></h6>
 
                 <div class="price">
@@ -364,7 +368,11 @@ if(isset($_POST['remove'])){
                         <span class="badge text-bg-primary"><?php echo $hotdog['Status'];?></span>
                     </button>
                 </div>
-            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+            <?php
+                $matches = glob(__DIR__ . '/../uploads/products/product_' . $hotdog['Product_ID'] . '.*');
+                $imgRel = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '../images/Burger (2).png';
+            ?>
+            <img src="<?php echo $imgRel; ?>" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
                 <h6 class="card-title mt-1"><?php echo $hotdog['Product_Name']; ?></h6>
 
                 <div class="price">
@@ -420,7 +428,11 @@ if(isset($_POST['remove'])){
                         <span class="badge text-bg-primary"><?php echo $corndog['Status'];?></span>
                     </button>
                 </div>
-            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+            <?php
+                $matches = glob(__DIR__ . '/../uploads/products/product_' . $corndog['Product_ID'] . '.*');
+                $imgRel = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '../images/Burger (2).png';
+            ?>
+            <img src="<?php echo $imgRel; ?>" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
                 <h6 class="card-title mt-1"><?php echo $corndog['Product_Name']; ?></h6>
 
                 <div class="price">
@@ -471,7 +483,11 @@ if(isset($_POST['remove'])){
                         <span class="badge text-bg-primary"><?php echo $Beverage['Status'];?></span>
                     </button>
                 </div>
-            <img src="../images/Burger (2).png" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
+            <?php
+                $matches = glob(__DIR__ . '/../uploads/products/product_' . $Beverage['Product_ID'] . '.*');
+                $imgRel = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '../images/Burger (2).png';
+            ?>
+            <img src="<?php echo $imgRel; ?>" style="height: 150px; object-fit: contain;" class="card-img-top" alt="...">
                 <h6 class="card-title mt-1"><?php echo $Beverage['Product_Name']; ?></h6>
 
                 <div class="price">

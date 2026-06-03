@@ -126,7 +126,8 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                HAVING product_category.Category_ID = 1 
+                    WHERE product_category.Category_ID = 1
+                    GROUP BY product.Product_ID
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -143,7 +144,8 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                HAVING product_category.Category_ID = 2 
+                    WHERE product_category.Category_ID = 2
+                    GROUP BY product.Product_ID
             ")->fetchAll(PDO::FETCH_ASSOC);
         }
 
@@ -160,7 +162,8 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                HAVING product_category.Category_ID = 3
+                    WHERE product_category.Category_ID = 3
+                    GROUP BY product.Product_ID
             ")->fetchAll();
         }
 
@@ -177,7 +180,8 @@
                 JOIN category ON product_category.Category_ID = category.Category_ID
                 JOIN product ON product_category.Product_ID = product.Product_ID
                 JOIN product_price ON product.Product_ID = product_price.Product_ID
-                HAVING product_category.Category_ID = 4 
+                    WHERE product_category.Category_ID = 4 
+                    GROUP BY product.Product_ID
             ")->fetchAll();
         }
 
