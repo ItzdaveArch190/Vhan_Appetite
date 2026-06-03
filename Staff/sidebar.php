@@ -134,7 +134,7 @@
         </div>
 
         <div class="app-sidebar__footer">
-            <button type="button" class="logout-btn"><ion-icon name="log-out-outline"></ion-icon></button>
+            <button type="button" class="logout-btn">Log out</ion-icon></button>
         </div>
     </aside>
 </div>

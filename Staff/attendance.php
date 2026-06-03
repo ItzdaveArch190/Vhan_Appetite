@@ -6,28 +6,61 @@
     $con = new Database();
     $fetchAttendance = $con->fetchPreviousAttendance();
     
-    $employee_id = $_SESSION['user_id'];
     date_default_timezone_set("Asia/Manila");
+    $employee_id = $_SESSION['user_id'];
+    
+
+    
+
+    if(!isset($_SESSION['timeDisable'])){
+        $_SESSION['timeDisable'] = false;
+    }
+
+    $TimeInButton_DisableActive =  $_SESSION['timeDisable'];
+    $TimeOutButton_DisableActive = !$_SESSION['timeDisable'];
 
     if(isset($_POST['log-in'])){
-        
 
-        
+        $_SESSION['timeDisable'] = true; //means true
+
         $LogIn = date('h:i A');
-        $_SESSION['TimeIN'] = $LogIn;   
+        $_SESSION['timeIN'] = $LogIn; 
+
+        $_SESSION['message'] = 'Time In : ' . $_SESSION['timeIN'];
+        $_SESSION['msg_type'] = "success";
+
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     }
+
+
+    
 
     if(isset($_POST['logout'])){
 
+        if(!isset($_SESSION['timeDisable'])){
+
+            $_SESSION['message'] = 'You must time in first!.';
+            $_SESSION['msg_type'] = 'danger';
+            header("Location : " . $_SERVER['PHP_SELF']);
+            exit();
+
+        } 
+        
+        $_SESSION['timeDisable'] =  false;
+
         $currentDate = date('Y-m-d'); //Date to post
 
-        
-        
+        $logOut = date('h:i A'); //time out
+        $_SESSION['timeOut'] = $logOut; 
 
-        $logOut = date('H:i A'); //time out
-        $_SESSION['TimeOut'] = $logOut;
-        
-        $con->insertAttendance($employee_id, $currentDate, $_SESSION['TimeIN'], $_SESSION['TimeOut']);
+        $con->insertAttendance($employee_id, $currentDate, $_SESSION['timeIN'], $_SESSION['timeOut']);
+
+        $_SESSION['message'] = 'Time Out : ' . $_SESSION['timeOut'];
+        $_SESSION['msg_type'] = "success";
+
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
         
     }
 
@@ -111,19 +144,20 @@
 
     <main class="container" style="margin-left: 250px; margin-top: 30px;">
 
-        <?php if(isset($_POST['log-in'])){ ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo 'Time Check : '. $_SESSION['TimeIN']; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php  } ?>
+        <?php if(isset($_SESSION['message'])){ ?>
+            <div class="alert alert-<?php echo $_SESSION['msg_type']; ?> alert-dismissible fade show" role="alert">
 
-        <?php if(isset($_POST['logout'])) { ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo 'Time Check : '. $_SESSION['TimeOut']; ?>
+                <?php echo $_SESSION['message']; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        <?php  } ?>
+
+        <?php  
+                unset($_SESSION['message']);
+                unset($_SESSION['msg_type']);
+        } ?>
+
+
+        
 
         <div class="container w-58 h-30 mt-3 text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
             <h3 class="fw-bold">Attendance</h3>
@@ -144,20 +178,23 @@
                         <p class="card-text">Start your day now!.</p>
 
                         <div class="d-grid gap-2">
+
                             <form method="POST">
-                                <button id="timein" class="btn btn-primary" name="log-in" type="submit" <?php if(isset($_SESSION['TimeIN']) && !isset($_SESSION['TimeOut'])) echo "disabled";?>>
+                                <button id="timein" class="btn btn-primary" name="log-in" type="submit" <?php echo $TimeInButton_DisableActive ? 'disabled' : ''; ?>>
                                     Time In
                                 </button>
 
-                                <button id="timeout" class="btn btn-primary" name="logout" type="submit" <?php if(!isset($_SESSION['TimeIN']) || isset($_SESSION['TimeOut'])) echo "enabled";?>
+                                <button id="timeout" class="btn btn-primary" name="logout" type="submit" <?php echo $TimeOutButton_DisableActive ? 'disabled' : '';?>
                                     >Log out
                                 </button>
                             </form>
+
                         </div>
                     </div>
                 </div>
             </div>
 
+            
             
 
                 <!--    Recent schedule   -->

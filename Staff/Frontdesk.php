@@ -21,46 +21,49 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="d-flex vh-100">
+    
+<div class="d-flex">
     <?php renderStaffSidebar(); ?>
 
-    <main class="" >
-        <div class="heading text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded card p-3">
-            <h1 class="fw-bold">Magandang Araw!, <?php echo " " . staffUsername();?></h1>
-                <div class="row">
-                    <div class="col">
-                    <p class="fw-light">Monitor your personal peformance.</p>
-                </div>
-            </div>
-        </div>
+    <main>
+        <div class="main-wrapper">
 
-            <div class="row d-flex g-4 p-3 ">
-                <div class="col text-center">
-                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                        <h4 class="fw-bold">Total Order</h4>
+            <div class="heading text-center shadow-sm p-3 mb-4 bg-body-tertiary rounded">
+                <h1 class="fw-bold">
+                    Magandang Araw!, <?php echo staffUsername(); ?>
+                </h1>
+                <p class="fw-light">Monitor your personal performance.</p>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-4 text-center">
+                    <div class="card shadow-sm p-3">
+                        <h5>Total Order</h5>
                         <h3><?php echo $gettotalOrder; ?></h3>
                     </div>
                 </div>
 
-                <div class="col-4 text-center">
-                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-                        <h4 class="fw-bold"><?php echo "Sales"?></h4>
-                        <h3><?php  ?></h3>
+                <div class="col-md-4 text-center">
+                    <div class="card shadow-sm p-3">
+                        <h5>Sales</h5>
+                        <h3>₱0.00</h3>
                     </div>
                 </div>
 
-                <div class="col-4 text-center">
-                    <div class="card shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-
+                <div class="col-md-4 text-center">
+                    <div class="card shadow-sm p-3">
+                        <h5>Status</h5>
+                        <h3>Active</h3>
                     </div>
                 </div>
+
             </div>
 
-            
-        
+        </div>
     </main>
-
 </div>
+
 
 </body>
 <script src="../functions/window.js"></script>

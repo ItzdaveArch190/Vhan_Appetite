@@ -7,7 +7,7 @@
 
     if(isset($_POST['confirmOrder'])){
         try{
-            $con->placeOrder($_SESSION['user_id'], $_SESSION['cart'] ?? [], 1);
+            $con->placeOrder($_SESSION['user_id'], $_SESSION['cart'] ?? [], $_SESSION['payment_method']);
             $_SESSION['cart'] = [];
             $_SESSION['success_message'] = 'Order has been confirmed successfully.';
             header("Location: confirmOrder.php");
@@ -141,9 +141,36 @@
                 </tr>
                     </tbody>
                 </table>
-                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
-                        Confirm Order
-                    </button>
+            
+                    <div class="d-flex justify-content-center gap-2">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Payment Method
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-center">
+                                <li>
+                                    <button class="dropdown-item" type="button" data-value="Cash">Cash</button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-value="Gcash">Gcash</button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-value="Maya">Maya</button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-value="Bank Transfer">Bank Transfer</button>
+                                </li>
+                            </ul>
+                        </div>
+                    
+                            <input type="hidden" name="payment_method" id="paymentMethod">
+
+                            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
+                                Confirm Order
+                            </button>
+                    </div>
+            
             </div>
         </div>
     </div>
@@ -173,7 +200,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    This order will be submitted as paid (Cash). Continue?
+                    This order will be submitted as paid (Cash/GCash). Continue?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -191,5 +218,22 @@
 
 
 </body>
+<script>
+document.querySelectorAll('.dropdown-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+
+        // Get value (Cash, Gcash, etc.)
+        var value = this.getAttribute('data-value');
+
+        // Put value into hidden input
+        document.getElementById('paymentMethod').value = value;
+
+        // Change button text
+        document.querySelector('.dropdown-toggle').innerText = value;
+
+    });
+});
+</script>
+
 <script src="../functions/window.js"></script>
 </html>
