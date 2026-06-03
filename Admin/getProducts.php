@@ -33,7 +33,7 @@ try{
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach($items as &$it){
             $matches = glob($baseDir . 'product_' . $it['Product_ID'] . '.*');
-            $it['image'] = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '';
+            $it['image'] = $matches ? str_replace(__DIR__ . '/../', '', $matches[0]) : '';
         }
         echo json_encode(['ok'=>true,'page'=>1,'per_page'=>1,'total'=>count($items),'items'=>$items]);
         exit();
@@ -43,7 +43,7 @@ try{
     // attach image rel path
     foreach($items as &$it){
         $matches = glob($baseDir . 'product_' . $it['Product_ID'] . '.*');
-        $it['image'] = $matches ? str_replace(__DIR__ . '/../', '../', $matches[0]) : '';
+        $it['image'] = $matches ? str_replace(__DIR__ . '/../', '', $matches[0]) : '';
     }
     $total = $con->getProductsCount($search, $category);
     echo json_encode(['ok' => true, 'page' => $page, 'per_page' => $per, 'total' => $total, 'items' => $items]);

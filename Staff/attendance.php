@@ -4,10 +4,9 @@
     require_once('sidebar.php');
     
     $con = new Database();
-    $fetchAttendance = $con->fetchPreviousAttendance();
-    
     date_default_timezone_set("Asia/Manila");
     $employee_id = $_SESSION['user_id'];
+    $fetchAttendance = $con->fetchPreviousAttendance($employee_id);
     
 
     

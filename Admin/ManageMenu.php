@@ -1,5 +1,4 @@
 <?php
-
 require_once('auth.php');
 require_once('../Database/database.php');
 require_once('sidebar.php');
@@ -8,6 +7,7 @@ $con = new Database();
 $getCategory = $con->viewCategory();
 $getProducts = $con->getAllProducts();
 
+// prepare uploads directory
 $uploadDir = __DIR__ . '/../uploads/products/';
 if (!is_dir($uploadDir)) {
     @mkdir($uploadDir, 0755, true);
@@ -17,8 +17,9 @@ function findProductImageRel($id){
     $base = __DIR__ . '/../uploads/products/product_'.intval($id).'.*';
     $matches = glob($base);
     if(!$matches) return '';
+    // return relative path from Admin folder
     $file = $matches[0];
-    $rel = str_replace(__DIR__ . '/../', '../', $file);
+    $rel = str_replace(__DIR__ . '/../', '', $file);
     return $rel;
 }
 
@@ -566,7 +567,7 @@ $getProducts = $con->getAllProducts();
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" id="editProductForm" enctype="multipart/form-data">
+                            <form method="POST" id="editProductForm">
                                 <input type="hidden" name="edit_product_id" id="edit_product_id">
                                 <div class="mb-3">
                                     <label class="form-label">Product Name</label>

@@ -7,7 +7,11 @@
 
     if(isset($_POST['confirmOrder'])){
         try{
-            $con->placeOrder($_SESSION['user_id'], $_SESSION['cart'] ?? [], $_SESSION['payment_method']);
+            // determine payment method: prefer POST, fallback to session
+            $pmName = $_POST['payment_method'] ?? $_SESSION['payment_method'] ?? 'Cash';
+            // map to payment method id
+            $pmID = $con->getPaymentMethodId($pmName);
+            $orderId = $con->placeOrder($_SESSION['user_id'], $_SESSION['cart'] ?? [], $pmID);
             $_SESSION['cart'] = [];
             $_SESSION['success_message'] = 'Order has been confirmed successfully.';
             header("Location: confirmOrder.php");
@@ -17,7 +21,12 @@
             header("Location: Checkout.php");
             exit();
         }
-    }   
+    }
+
+    // capture payment_method POST from dropdown if provided (non-confirm submission)
+    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_method']) && !isset($_POST['confirmOrder'])){
+        $_SESSION['payment_method'] = $_POST['payment_method'];
+    }
 ?>
 
 
@@ -204,7 +213,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form method="POST">
+                    <form method="POST" id="confirmOrderForm">
+                        <input type="hidden" name="payment_method" id="modalPaymentMethod" value="">
                         <button type="submit" name="confirmOrder" class="btn btn-primary">Confirm Order</button>
                     </form>
                 </div>
@@ -233,6 +243,16 @@ document.querySelectorAll('.dropdown-item').forEach(function(item) {
 
     });
 });
+
+// copy selected payment method into modal hidden input when modal opens
+var confirmModal = document.getElementById('confirm-popUp');
+if(confirmModal){
+    confirmModal.addEventListener('show.bs.modal', function (event) {
+        var pm = document.getElementById('paymentMethod')?.value || 'Cash';
+        var modalInput = document.getElementById('modalPaymentMethod');
+        if(modalInput) modalInput.value = pm;
+    });
+}
 </script>
 
 <script src="../functions/window.js"></script>

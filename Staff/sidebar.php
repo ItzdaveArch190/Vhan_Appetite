@@ -134,7 +134,7 @@
         </div>
 
         <div class="app-sidebar__footer">
-            <button type="button" class="logout-btn">Log out</ion-icon></button>
+            <a href="../logout.php" class="logout-btn d-inline-block text-center">Log out</a>
         </div>
     </aside>
 </div>
