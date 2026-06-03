@@ -194,7 +194,6 @@
         function loginUser($email, $password){
             $con = $this->opencon();
             try{
-                // owners are the admin accounts, so check the owner table first
                 $stmt2 = $con->prepare("SELECT Owner_ID, Owner_FN, Owner_LN, Email, Password FROM owner WHERE Email = ? LIMIT 1");
                 $stmt2->execute([$email]);
                 $owner = $stmt2->fetch(PDO::FETCH_ASSOC);
