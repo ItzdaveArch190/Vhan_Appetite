@@ -647,7 +647,7 @@
             }
         }
 
-        function getPayrollRecords($sortBy = 'latest'){
+        function getPayrollRecords($sortBy = 'latest', $status = 'unpaid'){
             $con = $this->opencon();
             try{
                 $con->exec("CREATE TABLE IF NOT EXISTS payroll_payment (
@@ -662,6 +662,17 @@
                 $orderBy = "latest_attendance.Attendance_Date DESC, employee.Employee_ID DESC";
                 if($sortBy === 'oldest'){
                     $orderBy = "latest_attendance.Attendance_Date ASC, employee.Employee_ID ASC";
+                }
+
+                // validate status filter
+                $status = strtolower(trim($status));
+                if(!in_array($status, ['all','paid','unpaid'])) $status = 'unpaid';
+
+                $whereClause = '';
+                if($status === 'paid'){
+                    $whereClause = ' WHERE payroll_status.Paid_At IS NOT NULL';
+                } elseif($status === 'unpaid'){
+                    $whereClause = ' WHERE payroll_status.Paid_At IS NULL';
                 }
 
                 $stmt = $con->query("SELECT
@@ -696,8 +707,9 @@
                         FROM payroll_payment
                         GROUP BY Employee_ID
                     ) pp2 ON pp1.Employee_ID = pp2.Employee_ID AND pp1.Paid_At = pp2.Paid_At
-                ) payroll_status ON payroll_status.Employee_ID = employee.Employee_ID
-                ORDER BY {$orderBy}");
+                ) payroll_status ON payroll_status.Employee_ID = employee.Employee_ID"
+                . $whereClause
+                . "\n                ORDER BY {$orderBy}");
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch(PDOException $e){
                 return [];
@@ -749,8 +761,7 @@
                 return [];
             }
         }
-
-
+        
         
     }
 ?>

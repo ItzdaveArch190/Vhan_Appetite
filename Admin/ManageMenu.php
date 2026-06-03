@@ -19,7 +19,10 @@ function findProductImageRel($id){
     if(!$matches) return '';
     // return relative path from Admin folder
     $file = $matches[0];
-    $rel = str_replace(__DIR__ . '/../', '', $file);
+    // normalize to web-friendly relative path: ../uploads/products/...
+    $rel = str_replace(__DIR__ . '/../', '../', $file);
+    // convert backslashes to forward slashes for browser compatibility on Windows
+    $rel = str_replace('\\', '/', $rel);
     return $rel;
 }
 

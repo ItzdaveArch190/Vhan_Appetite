@@ -8,22 +8,25 @@
     if(!in_array($sortBy, ['latest', 'oldest'])){
         $sortBy = 'latest';
     }
-    $payrollRecords = $con->getPayrollRecords($sortBy);
+    $status = $_GET['status'] ?? 'unpaid';
+    if(!in_array($status, ['all','paid','unpaid'])){ $status = 'unpaid'; }
+    $payrollRecords = $con->getPayrollRecords($sortBy, $status);
 
     if(isset($_POST['markPaid'])){
         $employeeID = (int)($_POST['employee_id'] ?? 0);
         $salaryAmount = (float)($_POST['salary_amount'] ?? 0);
         $returnSort = $_POST['sort'] ?? $sortBy;
+        $returnStatus = $_POST['status'] ?? $status;
 
         if($employeeID > 0){
             try{
                 $con->markPayrollPaid($employeeID, $salaryAmount);
                 $_SESSION['success_message'] = 'Payroll marked as paid.';
-                header('Location: PayrollRecords.php?sort=' . urlencode($returnSort));
+                header('Location: PayrollRecords.php?sort=' . urlencode($returnSort) . '&status=' . urlencode($returnStatus));
                 exit();
             } catch(Exception $e){
                 $_SESSION['error_message'] = 'Unable to update payroll status.';
-                header('Location: PayrollRecords.php?sort=' . urlencode($returnSort));
+                header('Location: PayrollRecords.php?sort=' . urlencode($returnSort) . '&status=' . urlencode($returnStatus));
                 exit();
             }
         }
@@ -216,10 +219,15 @@
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                     <h5 class="mb-0">Employee Payroll</h5>
                     <div class="d-flex gap-2 flex-wrap">
-                        <form method="GET" class="m-0">
+                        <form method="GET" class="m-0 d-flex gap-2 align-items-center">
                             <select class="form-select form-select-sm" name="sort" onchange="this.form.submit()">
                                 <option value="latest" <?php echo $sortBy === 'latest' ? 'selected' : ''; ?>>Latest duty date</option>
                                 <option value="oldest" <?php echo $sortBy === 'oldest' ? 'selected' : ''; ?>>Oldest duty date</option>
+                            </select>
+                            <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+                                <option value="unpaid" <?php echo $status === 'unpaid' ? 'selected' : ''; ?>>Unpaid</option>
+                                <option value="paid" <?php echo $status === 'paid' ? 'selected' : ''; ?>>Paid</option>
+                                <option value="all" <?php echo $status === 'all' ? 'selected' : ''; ?>>All</option>
                             </select>
                         </form>
                         <input id="payrollSearch" class="form-control form-control-sm" style="max-width: 280px;" placeholder="Search employee name...">
@@ -270,6 +278,7 @@
                                                 <input type="hidden" name="employee_id" value="<?php echo (int)$record['Employee_ID']; ?>">
                                                 <input type="hidden" name="salary_amount" value="<?php echo (float)($record['Salary_Amount'] ?? 0); ?>">
                                                 <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sortBy); ?>">
+                                                <input type="hidden" name="status" value="<?php echo htmlspecialchars($status); ?>">
                                                 <button type="submit" name="markPaid" class="btn btn-sm btn-success">Paid</button>
                                             </form>
                                         <?php } else { ?>
