@@ -53,7 +53,7 @@
         $logOut = date('h:i A'); //time out
         $_SESSION['timeOut'] = $logOut; 
 
-        $con->insertAttendance($employee_id, $currentDate, $_SESSION['timeIN'], $_SESSION['timeOut']);
+        $con->insertAttendance($_SESSION['user_id'], $currentDate, $_SESSION['timeIN'], $_SESSION['timeOut']);
 
         $_SESSION['message'] = 'Time Out : ' . $_SESSION['timeOut'];
         $_SESSION['msg_type'] = "success";
