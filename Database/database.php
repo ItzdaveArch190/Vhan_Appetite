@@ -96,9 +96,10 @@
                         LIMIT 30");
                     $stmt->execute([$employeeID]);
                     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-                } catch(PDOException $e){
+                } catch(PDOException $e) {
                     return [];
                 }
+                
             }
 
         function deleteCategory($categoryID){

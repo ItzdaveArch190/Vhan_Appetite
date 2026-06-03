@@ -21,7 +21,7 @@
         renderAdminSidebar();
     ?>
         <main>
-
+            
         </main>
     </div>
 </body>
