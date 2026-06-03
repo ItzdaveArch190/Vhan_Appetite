@@ -12,7 +12,7 @@ $con =  new Database();
 
         $adminUser = $con->loginUser($username, $password);
         if($adminUser && isset($adminUser['account_type']) && strtolower($adminUser['account_type']) === 'admin'){
-            $_SESSION['user_id'] = $adminUser['id_user'] ?? $adminUser['Owner_ID'] ?? null;
+            $_SESSION['Owner_ID'] = $adminUser['owner_id'] ?? $adminUser['Owner_ID'] ?? null;
             $_SESSION['Email'] = $adminUser['email'] ?? $username;
             $_SESSION['username'] = trim(($adminUser['first_name'] ?? '') . ' ' . ($adminUser['last_name'] ?? ''));
             $_SESSION['account_type'] = 'admin';
