@@ -3,30 +3,43 @@ session_start();
 require_once('Database/database.php');
 $con =  new Database();
 
-$staff__Credentials = $con->staffLogin();
-
     $error = "";
 
     if($_SERVER['REQUEST_METHOD'] === "POST"){
 
-        $username = $_POST['email'];
-        $password = $_POST['password'];
+        $username = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-        foreach($staff__Credentials as $staff ){
+        $adminUser = $con->loginUser($username, $password);
+        if($adminUser && isset($adminUser['account_type']) && strtolower($adminUser['account_type']) === 'admin'){
+            $_SESSION['user_id'] = $adminUser['id_user'] ?? $adminUser['Owner_ID'] ?? null;
+            $_SESSION['Email'] = $adminUser['email'] ?? $username;
+            $_SESSION['username'] = trim(($adminUser['first_name'] ?? '') . ' ' . ($adminUser['last_name'] ?? ''));
+            $_SESSION['account_type'] = 'admin';
 
+            header("Location: Admin/Dashboard.php");
+            exit();
+        }
 
-            if($username === $staff['Email'] && $password === $staff['Password']){
+        $staffCredentials = $con->staffLogin();
+        foreach($staffCredentials as $staff ){
+            $passwordMatches = false;
+            if(isset($staff['Password']) && $staff['Password'] !== ''){
+                $passwordMatches = password_verify($password, $staff['Password']) || $password === $staff['Password'];
+            }
 
+            if($username === $staff['Email'] && $passwordMatches){
                 $_SESSION['user_id'] = $staff['Employee_ID'];
                 $_SESSION['Email'] = $staff['Email'];
                 $_SESSION['username'] = $staff['username'];
+                $_SESSION['account_type'] = 'staff';
 
                 header("Location: Staff/Frontdesk.php");
                 exit();
-            } else {
-                $error="Invalid email or password";
             }
         }
+
+        $error = "Invalid email or password";
     }
 ?>
 

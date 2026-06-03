@@ -3,7 +3,7 @@ if(session_status() === PHP_SESSION_NONE) session_start();
 
 $redirectTo = 'Login.php';
 if(isset($_SESSION['account_type']) && strtolower($_SESSION['account_type']) === 'admin'){
-    $redirectTo = 'Admin/Login.php';
+    $redirectTo = 'Login.php';
 }
 
 $_SESSION = [];
