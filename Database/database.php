@@ -193,21 +193,14 @@
         function loginUser($email, $password){
             $con = $this->opencon();
             try{
-                $stmt = $con->prepare("SELECT * FROM tbl_user WHERE email = ? LIMIT 1");
-                $stmt->execute([$email]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($user){
-                    if(!empty($user['password']) && password_verify($password, $user['password'])) return $user;
-                    if($password === $user['password']) return $user;
-                }
-
-                // fallback to owner table (owners use bcrypt-hashed passwords in SQL dump)
+                // owners are the admin accounts, so check the owner table first
                 $stmt2 = $con->prepare("SELECT Owner_ID, Owner_FN, Owner_LN, Email, Password FROM owner WHERE Email = ? LIMIT 1");
                 $stmt2->execute([$email]);
                 $owner = $stmt2->fetch(PDO::FETCH_ASSOC);
                 if($owner){
-                    if(!empty($owner['Password']) && password_verify($password, $owner['Password'])){
-                        // map to tbl_user-like structure expected by admin login
+                    if (
+                        !empty($owner['Password']) &&
+                        (password_verify($password, $owner['Password']) || $password === $owner['Password'])){
                         return [
                             'id_user' => $owner['Owner_ID'],
                             'first_name' => $owner['Owner_FN'],
@@ -216,6 +209,15 @@
                             'account_type' => 'admin'
                         ];
                     }
+                }
+
+                // legacy fallback for any admin accounts that may still exist in tbl_user
+                $stmt = $con->prepare("SELECT * FROM tbl_user WHERE email = ? LIMIT 1");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if($user){
+                    if(!empty($user['password']) && password_verify($password, $user['password'])) return $user;
+                    if($password === $user['password']) return $user;
                 }
 
                 return false;
