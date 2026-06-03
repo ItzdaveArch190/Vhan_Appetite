@@ -86,7 +86,13 @@ if(isset($_POST['remove'])){
     
 
     <title>Menu</title>
-    
+    <style>
+        .section-heading{ font-family: 'Stack Sans Headline', sans-serif; font-weight:700; }
+        .card .price .btn{ background:#DA954B; border:none; }
+        .product-card .card{ transition: transform .12s ease, box-shadow .12s ease; }
+        .product-card .card:hover{ transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        nav ul{ max-width:700px; }
+    </style>
 </head>
 <style>
      @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap');
@@ -294,7 +300,7 @@ if(isset($_POST['remove'])){
 
 
         <?php foreach($Burger_PriceLists as $burger) {?>
-        <div class="col-md-3 col-lg-3 ">
+        <div class="col-md-3 col-lg-3 product-card">
             <div class="card h-200  text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded" style="object-fit: contain;">
                 <div class="pop p-2">
                     <button type="button" class="btn btn-primary" disabled>
@@ -320,12 +326,12 @@ if(isset($_POST['remove'])){
 
                         
 
-                        <button type="submit" name="add" class="btn custombtn" <?php if($burger['Status'] != 'Available') echo 'disabled'; ?>>
+                        <button type="submit" name="add" class="btn btn-success btn-sm" <?php if($burger['Status'] != 'Available') echo 'disabled'; ?>>
                             <i class="fa-solid fa-plus"></i>
                         </button>
 
 
-                        <button type="submit" name="remove" class="btn custombtn">
+                        <button type="submit" name="remove" class="btn btn-outline-danger btn-sm">
                             <i class="fa-solid fa-minus"></i>
                         </button>
 

@@ -20,6 +20,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <title>Burger Section</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .main-wrapper{ padding:28px; }
+        .hero-card{ border-radius:18px; padding:28px; }
+        .stat-value{ font-size:1.75rem; font-weight:800; }
+        .quick-actions .btn{ min-width:160px; }
+    </style>
 </head>
 <body>
     
@@ -36,26 +42,33 @@
                 <p class="fw-light">Monitor your personal performance.</p>
             </div>
 
+            <div class="mb-4 quick-actions d-flex gap-2 justify-content-center">
+                <a href="Menu.php" class="btn btn-outline-primary">Open Menu</a>
+                <a href="Checkout.php" class="btn btn-outline-success">Checkout</a>
+                <a href="confirmOrder.php" class="btn btn-outline-secondary">Completed Orders</a>
+                <a href="attendance.php" class="btn btn-outline-warning">Attendance</a>
+            </div>
+
             <div class="row g-4">
 
                 <div class="col-md-4 text-center">
-                    <div class="card shadow-sm p-3">
+                    <div class="card shadow-sm p-3 hero-card text-center">
                         <h5>Total Order</h5>
-                        <h3><?php echo $gettotalOrder; ?></h3>
+                        <div class="stat-value"><?php echo $gettotalOrder; ?></div>
                     </div>
                 </div>
 
                 <div class="col-md-4 text-center">
-                    <div class="card shadow-sm p-3">
+                    <div class="card shadow-sm p-3 hero-card text-center">
                         <h5>Sales</h5>
-                        <h3><?php echo '₱' . number_format($getSales ?? 0, 2); ?></h3>
+                        <div class="stat-value"><?php echo '₱' . number_format($getSales ?? 0, 2); ?></div>
                     </div>
                 </div>
 
                 <div class="col-md-4 text-center">
-                    <div class="card shadow-sm p-3">
+                    <div class="card shadow-sm p-3 hero-card text-center">
                         <h5>Status</h5>
-                        <h3>Active</h3>
+                        <div class="stat-value">Active</div>
                     </div>
                 </div>
 
