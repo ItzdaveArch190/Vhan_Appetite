@@ -1,5 +1,11 @@
 <?php
 if(session_status() === PHP_SESSION_NONE) session_start();
+
+$redirectTo = 'Login.php';
+if(isset($_SESSION['account_type']) && strtolower($_SESSION['account_type']) === 'admin'){
+    $redirectTo = 'Admin/Login.php';
+}
+
 $_SESSION = [];
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
@@ -9,6 +15,6 @@ if (ini_get("session.use_cookies")) {
     );
 }
 session_destroy();
-header('Location: Login.php');
+header('Location: ' . $redirectTo);
 exit();
 ?>

@@ -136,7 +136,7 @@
             <button onclick="toAttendance()" class="btn custom-btn" type="button">Attendance Summary</button>
             <button onclick="toProducts()" class="btn custom-btn" type="button">Products</button>
             <button onclick="toSalesReport()" class="btn custom-btn" type="button">Sales Report</button>
-            <button class="btn custom-btn" type="button">Payroll records</button>
+            <button onclick="toPayrollRecords()" class="btn custom-btn" type="button">Payroll records</button>
             <button onclick="toStaffs()" class="btn custom-btn" type="button">Monitor Staff</button>
         </div>
     </div>

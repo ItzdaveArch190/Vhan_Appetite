@@ -6,6 +6,16 @@
     $con = new Database();
     $getProducts = $con->getAllProducts();
     $getCategory = $con->viewCategory();
+    $totalProducts = count($getProducts);
+    $totalCategories = count($getCategory);
+    $activeProducts = 0;
+    $totalStock = 0;
+    foreach($getProducts as $product){
+        $totalStock += (int)($product['Stock'] ?? 0);
+        if((int)($product['Status'] ?? 0) === 1 || strtolower((string)($product['Status'] ?? '')) === 'available'){
+            $activeProducts++;
+        }
+    }
 
     // helper to find uploaded image relative path
     function findProductImageRel_view($id){
@@ -26,6 +36,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <title>Products</title>
     <style>
+        body{
+            background:
+                radial-gradient(circle at top right, rgba(15, 138, 82, 0.08), transparent 26%),
+                radial-gradient(circle at bottom left, rgba(227, 151, 16, 0.08), transparent 24%),
+                #f7f8f4;
+        }
+
         .sidebar{
             width: 350px;
             position:fixed;
@@ -34,23 +51,213 @@
             height: 100vh;
             overflow: hidden; 
         }
-        
-        .owner-name{
-            font-family:'Brush Script MT', 'Brush Script Std', cursive;
-            font-size: 20px;
+
+        .products-shell{
+            margin-left: 350px;
+            min-height: 100vh;
+            padding: 28px;
         }
-        .custom-btn{
-            background-color:#E69B1A;
-            height: 50px;
+
+        .products-hero{
+            border: 0;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at top left, rgba(255,255,255,.07), transparent 30%),
+                linear-gradient(145deg, #13181d 0%, #22282e 58%, #1c2126 100%);
+            color: #f8fafc;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
         }
-        .custom-btn:hover{
-            background-color:#BC7F15;
+
+        .products-hero__body{
+            padding: 30px 32px;
         }
-        main{
-            margin-left: 360px;
-            margin-top:40px;
-            height: 100vh;
-            overflow-y:auto;
+
+        .products-kicker{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 138, 82, 0.22);
+            color: #e6fff0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .products-title{
+            margin: 14px 0 8px;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .products-copy{
+            color: rgba(255,255,255,.84);
+            max-width: 720px;
+        }
+
+        .summary-card,
+        .table-card{
+            border: 0;
+            border-radius: 24px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+            background: #fff;
+        }
+
+        .summary-metric{
+            border-radius: 18px;
+            background: #fff;
+            border: 1px solid #e7ece3;
+            padding: 16px;
+        }
+
+        .summary-metric .label{
+            color: #6b7280;
+            font-size: .76rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .summary-metric .value{
+            margin-top: 4px;
+            color: #1f2937;
+            font-size: 1.45rem;
+            font-weight: 800;
+        }
+
+        .toolbar-card{
+            border: 0;
+            border-radius: 22px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+            background: #fff;
+        }
+
+        .filter-chip{
+            border: 1px solid #dbe5d5;
+            background: #fff;
+            color: #1f2937;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: all .2s ease;
+        }
+
+        .filter-chip.active,
+        .filter-chip:hover{
+            background: #0f8a52;
+            color: #fff;
+            border-color: #0f8a52;
+        }
+
+        .product-card{
+            border: 0;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+            transition: transform .2s ease, box-shadow .2s ease;
+            background: #fff;
+            height: 100%;
+        }
+
+        .product-card:hover{
+            transform: translateY(-3px);
+            box-shadow: 0 18px 44px rgba(15, 23, 42, 0.12);
+        }
+
+        .product-card__image{
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+            background: #eef2ec;
+        }
+
+        .product-card__body{
+            padding: 16px;
+        }
+
+        .product-card__title{
+            margin-bottom: 6px;
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #1f2937;
+        }
+
+        .product-card__meta{
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .product-badge{
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 138, 82, 0.08);
+            color: #0d6b42;
+            font-weight: 700;
+            font-size: .82rem;
+        }
+
+        .product-price{
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .product-stock{
+            font-size: .88rem;
+            color: #6b7280;
+        }
+
+        .product-actions{
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .product-actions .btn{
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .empty-state{
+            border: 1px dashed #d6dfd2;
+            border-radius: 22px;
+            background: #fbfcfa;
+            padding: 40px 20px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .section-label{
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #0d6b42;
+        }
+
+        .search-box{
+            min-width: 260px;
+        }
+
+        @media (max-width: 991px){
+            .products-shell{
+                margin-left: 0;
+                padding: 18px 14px 28px;
+            }
+
+            .search-box{
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -58,29 +265,82 @@
     <div class="d-flex vh-100">
     <?php renderAdminSidebar(); ?>
 
-<main>
-    <div class="container-fluid px-4">
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h2 class="mb-0">Products</h2>
-                <p class="text-muted small">Browse and review all products in the catalog.</p>
-            </div>
-            <div class="col-md-4 d-flex justify-content-end align-items-center gap-2">
-                <input id="vpSearch" class="form-control form-control-sm" placeholder="Search products...">
-                <select id="vpFilterCat" class="form-select form-select-sm w-auto">
-                    <option value="">All</option>
-                    <?php foreach($getCategory as $c): ?>
-                        <option value="<?php echo $c['Category_ID']; ?>"><?php echo htmlspecialchars($c['Category_Name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
+<main class="products-shell w-100">
+    <div class="card products-hero mb-4">
+        <div class="products-hero__body">
+            <span class="products-kicker">Product Catalog</span>
+            <h1 class="products-title">Browse, manage, and update your menu</h1>
+            <p class="products-copy mb-0">Review the catalog in a cleaner layout with live search, category filtering, and fast edit access for each item.</p>
+        </div>
+    </div>
+
+    <div class="card summary-card mb-4">
+        <div class="card-body p-3 p-md-4">
+            <div class="row g-3">
+                <div class="col-12 col-md-3">
+                    <div class="summary-metric">
+                        <div class="label">Products</div>
+                        <div class="value"><?php echo $totalProducts; ?></div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="summary-metric">
+                        <div class="label">Categories</div>
+                        <div class="value"><?php echo $totalCategories; ?></div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="summary-metric">
+                        <div class="label">Active Items</div>
+                        <div class="value"><?php echo $activeProducts; ?></div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="summary-metric">
+                        <div class="label">Total Stock</div>
+                        <div class="value"><?php echo $totalStock; ?></div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="row g-3" id="vpGrid"></div>
-        <div class="row mt-3">
-            <div class="col-12 d-flex justify-content-center">
-                <nav><ul class="pagination" id="vpPagination"></ul></nav>
+    <div class="card toolbar-card mb-4">
+        <div class="card-body p-3 p-md-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                <div>
+                    <div class="section-label mb-2">Catalog Controls</div>
+                    <h5 class="mb-0">Search and filter products</h5>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <input id="vpSearch" class="form-control search-box" placeholder="Search products...">
+                    <select id="vpFilterCat" class="form-select" style="min-width: 190px;">
+                        <option value="">All Categories</option>
+                        <?php foreach($getCategory as $c): ?>
+                            <option value="<?php echo $c['Category_ID']; ?>"><?php echo htmlspecialchars($c['Category_Name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
+
+            <div class="d-flex gap-2 flex-wrap mb-3" id="vpCategoryChips">
+                <button type="button" class="btn filter-chip active" data-cat="">All</button>
+                <?php foreach($getCategory as $c): ?>
+                    <button type="button" class="btn filter-chip" data-cat="<?php echo $c['Category_ID']; ?>"><?php echo htmlspecialchars($c['Category_Name']); ?></button>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="row g-3" id="vpGrid"></div>
+            <div class="empty-state mt-3 d-none" id="vpEmptyState">
+                <h6 class="mb-1">No products found</h6>
+                <div>Try a different search term or category filter.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+            <nav><ul class="pagination" id="vpPagination"></ul></nav>
         </div>
     </div>
 </main>
@@ -93,27 +353,44 @@
         const filter = document.getElementById('vpFilterCat');
         const grid = document.getElementById('vpGrid');
         const pagination = document.getElementById('vpPagination');
-        let currentPage = 1; const perPage = 12;
+        const emptyState = document.getElementById('vpEmptyState');
+        const chips = Array.from(document.querySelectorAll('#vpCategoryChips .filter-chip'));
+        let currentPage = 1;
+        const perPage = 12;
+
+        function setEmptyState(show){
+            if(!emptyState) return;
+            emptyState.classList.toggle('d-none', !show);
+        }
 
         function renderItems(items){
             grid.innerHTML = '';
+            setEmptyState(!items || !items.length);
             items.forEach(function(p){
                 const col = document.createElement('div'); col.className = 'col-6 col-md-4 col-lg-3 vp-card';
                 col.setAttribute('data-name', (p.Product_Name||'').toLowerCase());
                 col.setAttribute('data-cat', p.Category_ID || '');
                 col.innerHTML = `
-                    <div class="card h-100 shadow-sm">
-                        ${p.image? `<img src="${p.image}" class="card-img-top" style="height:160px;object-fit:cover;">` : '<div class="card-img-top d-flex align-items-center justify-content-center" style="height:160px;background:#f5f5f5;">No image</div>'}
-                        <div class="card-body p-2">
-                            <h6 class="card-title mb-1">${escapeHtml(p.Product_Name)}</h6>
-                            <div class="small text-muted mb-2">${escapeHtml(p.Category_Name||'-')}</div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="fw-bold">₱${Number(p.Product_Price||0).toFixed(2)}</div>
-                                <div class="small text-muted">Stock: ${p.Stock}</div>
+                    <div class="product-card">
+                        ${p.image? `<img src="${p.image}" class="product-card__image" alt="${escapeHtml(p.Product_Name)}">` : '<div class="product-card__image d-flex align-items-center justify-content-center text-muted">No image</div>'}
+                        <div class="product-card__body">
+                            <div class="d-flex align-items-start justify-content-between gap-2">
+                                <div>
+                                    <div class="product-card__title">${escapeHtml(p.Product_Name)}</div>
+                                    <div class="small text-muted">${escapeHtml(p.Category_Name||'-')}</div>
+                                </div>
+                                <span class="product-badge">${escapeHtml(String(p.Status || 'Active'))}</span>
                             </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 p-2 d-flex justify-content-end gap-2">
-                            <button class="btn btn-sm btn-outline-primary vp-manage-btn" data-id="${p.Product_ID}">Manage</button>
+
+                            <div class="product-card__meta">
+                                <div>
+                                    <div class="product-price">₱${Number(p.Product_Price||0).toFixed(2)}</div>
+                                    <div class="product-stock">Stock: ${Number(p.Stock||0)}</div>
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn btn-outline-primary vp-manage-btn" data-id="${p.Product_ID}">Edit</button>
+                                </div>
+                            </div>
                         </div>
                     </div>`;
                 grid.appendChild(col);
@@ -130,6 +407,7 @@
         function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
         function fetchPage(page){
+            currentPage = page;
             const q = encodeURIComponent(search?.value || '');
             const cat = encodeURIComponent(filter?.value || '');
             fetch('getProducts.php?page='+page+'&per_page='+perPage+'&search='+q+'&category='+cat)
@@ -158,7 +436,21 @@
         }
 
         if(search) search.addEventListener('input', function(){ fetchPage(1); });
-        if(filter) filter.addEventListener('change', function(){ fetchPage(1); });
+        if(filter) filter.addEventListener('change', function(){
+            chips.forEach(function(chip){
+                chip.classList.toggle('active', chip.getAttribute('data-cat') === (filter.value || ''));
+            });
+            fetchPage(1);
+        });
+
+        chips.forEach(function(chip){
+            chip.addEventListener('click', function(){
+                const cat = this.getAttribute('data-cat') || '';
+                if(filter) filter.value = cat;
+                chips.forEach(function(btn){ btn.classList.toggle('active', btn === chip); });
+                fetchPage(1);
+            });
+        });
 
         // initial load
         fetchPage(1);

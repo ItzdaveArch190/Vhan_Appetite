@@ -142,6 +142,54 @@
                 
         }
 
+        function getEmployeesList(){
+            $con = $this->opencon();
+            try{
+                return $con->query("SELECT employee.Employee_ID, employee.Owner_ID, employee.Emp_FN, employee.Emp_LN, employee.Email, employee.Phone_Number, employee.Password, CONCAT(employee.Emp_FN,' ',employee.Emp_LN) AS username FROM employee ORDER BY employee.Employee_ID DESC")->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function getAdminUsersList(){
+            $con = $this->opencon();
+            try{
+                return $con->query("SELECT id_user, first_name, middle_name, last_name, email, account_type, created_at FROM tbl_user WHERE LOWER(account_type) = 'admin' ORDER BY id_user DESC")->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function AddEmployee($ownerID, $firstName, $lastName, $email, $phoneNumber, $password){
+            $con = $this->opencon();
+            try{
+                $con->beginTransaction();
+                $stmt = $con->prepare("INSERT INTO employee (Owner_ID, Emp_FN, Emp_LN, Password, Email, Phone_Number) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$ownerID, $firstName, $lastName, $password, $email, $phoneNumber]);
+                $insertID = $con->lastInsertId();
+                $con->commit();
+                return $insertID;
+            } catch(PDOException $e){
+                if($con->inTransaction()) $con->rollBack();
+                throw $e;
+            }
+        }
+
+        function AddAdminUser($firstName, $lastName, $email, $password){
+            $con = $this->opencon();
+            try{
+                $con->beginTransaction();
+                $stmt = $con->prepare("INSERT INTO tbl_user (first_name, last_name, email, password, account_type) VALUES (?, ?, ?, ?, 'admin')");
+                $stmt->execute([$firstName, $lastName, $email, $password]);
+                $insertID = $con->lastInsertId();
+                $con->commit();
+                return $insertID;
+            } catch(PDOException $e){
+                if($con->inTransaction()) $con->rollBack();
+                throw $e;
+            }
+        }
+
         function loginUser($email, $password){
             $con = $this->opencon();
             try{
@@ -554,6 +602,151 @@
                 return true;
             } catch(PDOException $e){
                 throw $e;
+            }
+        }
+
+        function getSalesReportByDay($limit = 31){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT
+                    DATE(sales_report.SR_Date) AS Report_Date,
+                    COUNT(DISTINCT sales_report.Order_ID) AS Orders_Count,
+                    COUNT(order_item.Order_Item_ID) AS Items_Sold,
+                    SUM(sales_report.Total_amount) AS Total_Income
+                FROM sales_report
+                LEFT JOIN orders ON sales_report.Order_ID = orders.Order_ID
+                LEFT JOIN order_item ON orders.Order_ID = order_item.Order_ID
+                GROUP BY DATE(sales_report.SR_Date)
+                ORDER BY Report_Date DESC
+                LIMIT ?");
+                $stmt->bindValue(1, (int)$limit, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function getTopSoldItems($limit = 10){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->prepare("SELECT
+                    product.Product_Name,
+                    COUNT(order_item.Order_Item_ID) AS Items_Sold,
+                    SUM(order_item.Order_Subtotal) AS Item_Income
+                FROM order_item
+                JOIN product ON order_item.Product_ID = product.Product_ID
+                GROUP BY product.Product_ID, product.Product_Name
+                ORDER BY Items_Sold DESC, Item_Income DESC
+                LIMIT ?");
+                $stmt->bindValue(1, (int)$limit, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function getPayrollRecords($sortBy = 'latest'){
+            $con = $this->opencon();
+            try{
+                $con->exec("CREATE TABLE IF NOT EXISTS payroll_payment (
+                    Payroll_Payment_ID int(11) NOT NULL AUTO_INCREMENT,
+                    Employee_ID int(11) NOT NULL,
+                    Salary_Amount decimal(10,2) NOT NULL,
+                    Paid_At timestamp NOT NULL DEFAULT current_timestamp(),
+                    PRIMARY KEY (Payroll_Payment_ID),
+                    KEY Employee_ID (Employee_ID)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+                $orderBy = "latest_attendance.Attendance_Date DESC, employee.Employee_ID DESC";
+                if($sortBy === 'oldest'){
+                    $orderBy = "latest_attendance.Attendance_Date ASC, employee.Employee_ID ASC";
+                }
+
+                $stmt = $con->query("SELECT
+                    employee.Employee_ID,
+                    employee.Emp_FN,
+                    employee.Emp_LN,
+                    employee.Email,
+                    employee.Phone_Number,
+                    salary.Salary_Amount,
+                    salary_bonus.BonusName,
+                    latest_attendance.Attendance_Date,
+                    latest_attendance.Time_In,
+                    latest_attendance.Time_Out,
+                    payroll_status.Paid_At AS Payroll_Paid_At
+                FROM employee
+                LEFT JOIN salary ON salary.Employee_ID = employee.Employee_ID
+                LEFT JOIN salary_bonus ON salary_bonus.Salary_ID = salary.Salary_ID
+                LEFT JOIN (
+                    SELECT a1.Employee_ID, a1.Attendance_Date, a1.Time_In, a1.Time_Out
+                    FROM attendance a1
+                    INNER JOIN (
+                        SELECT Employee_ID, MAX(Attendance_Date) AS Attendance_Date
+                        FROM attendance
+                        GROUP BY Employee_ID
+                    ) a2 ON a1.Employee_ID = a2.Employee_ID AND a1.Attendance_Date = a2.Attendance_Date
+                ) latest_attendance ON latest_attendance.Employee_ID = employee.Employee_ID
+                LEFT JOIN (
+                    SELECT pp1.Employee_ID, pp1.Paid_At
+                    FROM payroll_payment pp1
+                    INNER JOIN (
+                        SELECT Employee_ID, MAX(Paid_At) AS Paid_At
+                        FROM payroll_payment
+                        GROUP BY Employee_ID
+                    ) pp2 ON pp1.Employee_ID = pp2.Employee_ID AND pp1.Paid_At = pp2.Paid_At
+                ) payroll_status ON payroll_status.Employee_ID = employee.Employee_ID
+                ORDER BY {$orderBy}");
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function markPayrollPaid($employeeID, $salaryAmount){
+            $con = $this->opencon();
+            try{
+                $con->exec("CREATE TABLE IF NOT EXISTS payroll_payment (
+                    Payroll_Payment_ID int(11) NOT NULL AUTO_INCREMENT,
+                    Employee_ID int(11) NOT NULL,
+                    Salary_Amount decimal(10,2) NOT NULL,
+                    Paid_At timestamp NOT NULL DEFAULT current_timestamp(),
+                    PRIMARY KEY (Payroll_Payment_ID),
+                    KEY Employee_ID (Employee_ID)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+                $stmt = $con->prepare("INSERT INTO payroll_payment (Employee_ID, Salary_Amount) VALUES (?, ?)");
+                $stmt->execute([$employeeID, $salaryAmount]);
+                return $con->lastInsertId();
+            } catch(PDOException $e){
+                throw $e;
+            }
+        }
+
+        function getEmployeesForAdmin(){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->query("SELECT employee.Employee_ID, employee.Owner_ID, employee.Emp_FN, employee.Emp_LN, employee.Email, employee.Phone_Number, employee.Password, CONCAT(employee.Emp_FN,' ',employee.Emp_LN) AS username FROM employee ORDER BY employee.Employee_ID DESC");
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
+            }
+        }
+
+        function getLatestAttendanceByEmployee(){
+            $con = $this->opencon();
+            try{
+                $stmt = $con->query("SELECT a1.Employee_ID, a1.Attendance_Date, a1.Time_In, a1.Time_Out
+                    FROM attendance a1
+                    INNER JOIN (
+                        SELECT Employee_ID, MAX(Attendance_Date) AS Attendance_Date
+                        FROM attendance
+                        GROUP BY Employee_ID
+                    ) a2 ON a1.Employee_ID = a2.Employee_ID AND a1.Attendance_Date = a2.Attendance_Date");
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch(PDOException $e){
+                return [];
             }
         }
 

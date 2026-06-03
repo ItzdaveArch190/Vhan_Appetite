@@ -18,6 +18,10 @@ function toSalesReport(){
     window.location.href = "DSR.php";
 }
 
+function toPayrollRecords(){
+    window.location.href = "PayrollRecords.php";
+}
+
 function toStaffs(){
     window.location.href = "MonitorStaff.php";
 }
