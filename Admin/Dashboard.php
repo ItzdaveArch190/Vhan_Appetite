@@ -7,6 +7,7 @@
     $DailySales = $con->getTodaySales();
     $getOrder = $con->getOrder();
     $get_EMPLOYEE = $con->getAllEmployee();
+    $topProducts = $con->getTopSoldItems(3);
 ?>
 
 <!DOCTYPE html>
@@ -505,10 +506,17 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php if(empty($topProducts)){ ?>
+                                    <tr>
+                                        <td colspan="2" class="text-center py-4">No sold products found yet.</td>
+                                    </tr>
+                                <?php } ?>
+                                <?php foreach($topProducts as $item){ ?>
                                 <tr>
-                                    <td>B1T1 Premium Cheese Burger</td>
-                                    <td class="text-end fw-semibold">10</td>
+                                    <td><?php echo htmlspecialchars($item['Product_Name'] ?? '-'); ?></td>
+                                    <td class="text-end fw-semibold"><?php echo (int)($item['Items_Sold'] ?? 0); ?></td>
                                 </tr>
+                                <?php } ?>
                                 <tr>
                                     <td>Hungarian Sausage</td>
                                     <td class="text-end fw-semibold">7</td>
