@@ -177,14 +177,13 @@
                         <p class="card-text">Start your day now!.</p>
 
                         <div class="d-grid gap-2">
-
                             <form method="POST">
-                                <button id="timein" class="btn btn-primary" name="log-in" type="submit" <?php echo $TimeInButton_DisableActive ? 'disabled' : ''; ?>>
+                                <button id="timein" class="btn btn-success" name="log-in" type="submit" <?php echo $TimeInButton_DisableActive ? 'disabled' : ''; ?>>
                                     Time In
                                 </button>
 
-                                <button id="timeout" class="btn btn-primary" name="logout" type="submit" <?php echo $TimeOutButton_DisableActive ? 'disabled' : '';?>
-                                    >Log out
+                                <button id="timeout" class="btn btn-danger" name="logout" type="submit" <?php echo $TimeOutButton_DisableActive ? 'disabled' : '';?>>
+                                    Log out
                                 </button>
                             </form>
 

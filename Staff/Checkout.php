@@ -151,33 +151,19 @@
                     </tbody>
                 </table>
             
-                    <div class="d-flex justify-content-center gap-2">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                Select Payment Method
-                            </button>
-
-                            <ul class="dropdown-menu dropdown-menu-center">
-                                <li>
-                                    <button class="dropdown-item" type="button" data-value="Cash">Cash</button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button" data-value="Gcash">Gcash</button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button" data-value="Maya">Maya</button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button" data-value="Bank Transfer">Bank Transfer</button>
-                                </li>
-                            </ul>
+                    <div class="d-flex justify-content-center gap-2 align-items-center">
+                        <div style="min-width:220px;">
+                            <select class="form-select form-select-sm" id="paymentMethod" name="payment_method">
+                                <option value="Cash" <?php echo (($_SESSION['payment_method'] ?? '') === 'Cash') ? 'selected' : ''; ?>>Cash</option>
+                                <option value="Gcash" <?php echo (($_SESSION['payment_method'] ?? '') === 'Gcash') ? 'selected' : ''; ?>>Gcash</option>
+                                <option value="Maya" <?php echo (($_SESSION['payment_method'] ?? '') === 'Maya') ? 'selected' : ''; ?>>Maya</option>
+                                <option value="Bank Transfer" <?php echo (($_SESSION['payment_method'] ?? '') === 'Bank Transfer') ? 'selected' : ''; ?>>Bank Transfer</option>
+                            </select>
                         </div>
-                    
-                            <input type="hidden" name="payment_method" id="paymentMethod">
 
-                            <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
-                                Confirm Order
-                            </button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirm-popUp" <?php if(empty($_SESSION['cart'])) echo 'disabled'; ?>>
+                            Confirm Order
+                        </button>
                     </div>
             
             </div>
@@ -229,21 +215,6 @@
 
 </body>
 <script>
-document.querySelectorAll('.dropdown-item').forEach(function(item) {
-    item.addEventListener('click', function() {
-
-        // Get value (Cash, Gcash, etc.)
-        var value = this.getAttribute('data-value');
-
-        // Put value into hidden input
-        document.getElementById('paymentMethod').value = value;
-
-        // Change button text
-        document.querySelector('.dropdown-toggle').innerText = value;
-
-    });
-});
-
 // copy selected payment method into modal hidden input when modal opens
 var confirmModal = document.getElementById('confirm-popUp');
 if(confirmModal){

@@ -87,18 +87,18 @@
 
                             <?php foreach($completedOrders as $order){ ?>
                                 <?php $orderItems = $con->getCompletedOrderItems($order['Order_ID']); ?>
-                                <tr>
-                                    <td><?php echo $order['Order_ID']; ?></td>
-                                    <td class="text-start">
-                                        <?php foreach($orderItems as $item){ ?>
-                                            <div><?php echo $item['Product_Name']; ?> x<?php echo $item['Qty']; ?></div>
-                                        <?php } ?>
-                                    </td>
-                                    <td><?php echo $order['Order_Quantity']; ?></td>
-                                    <td><?php echo !empty($order['Payment_Method']) ? $order['Payment_Method'] : 'Cash'; ?></td>
-                                    <td><?php echo $order['Total_amount']; ?></td>
-                                    <td><?php echo $order['Completed_Date']; ?></td>
-                                </tr>
+                                                <tr>
+                                                    <td><?php echo $order['Order_ID']; ?></td>
+                                                    <td class="text-start">
+                                                        <?php foreach($orderItems as $item){ ?>
+                                                            <div><?php echo htmlspecialchars($item['Product_Name']); ?> <small class="text-muted">x<?php echo $item['Qty']; ?></small></div>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?php echo $order['Order_Quantity']; ?></td>
+                                                    <td><?php echo !empty($order['Payment_Method']) ? htmlspecialchars($order['Payment_Method']) : 'Cash'; ?></td>
+                                                    <td>₱<?php echo number_format((float)$order['Total_amount'],2); ?></td>
+                                                    <td><?php echo $order['Completed_Date']; ?></td>
+                                                </tr>
                             <?php } ?>
                         </tbody>
                     </table>
