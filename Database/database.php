@@ -763,6 +763,116 @@
                 return [];
             }
         }
+
+        function todayTotalSales($employee_ID){
+            $con = $this->opencon();
+
+            $stmt = $con->prepare("
+                SELECT SUM(Total_amount) AS totalSales
+                FROM sales_report
+                WHERE Employee_ID = ?
+                AND DATE(SR_Date) = CURDATE()
+            ");
+
+            $stmt->execute([$employee_ID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['totalSales'] ?? 0;
+        }   
+
+        function getTotalOrderWithinDay($employee_ID){
+                $con = $this->opencon();
+
+                $stmt = $con->prepare("
+                    SELECT COUNT(*) AS totalOrder
+                    FROM orders
+                    WHERE Employee_ID = ?
+                    AND DATE(Order_Date) = CURDATE()
+                ");
+
+                $stmt->execute([$employee_ID]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                return $result['totalOrder'] ?? 0;
+        }
+
+        
+        
+        function getCashToday($employee_ID, $method_id){
+            $con = $this->opencon();
+
+            $stmt = $con->prepare("
+                SELECT SUM(p.Payment_Amount) AS total
+                FROM payment p
+                JOIN orders o ON p.Order_ID = o.Order_ID
+                WHERE p.Payment_Method_ID = ?
+                AND o.Employee_ID = ?
+                AND DATE(p.Payment_Date) = CURDATE()
+            ");
+
+            $stmt->execute([$method_id, $employee_ID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['total'] ?? 0;
+        }
+
+
+        function getGCashToday($employee_ID, $method_id){
+            $con = $this->opencon();
+
+            $stmt = $con->prepare("
+                SELECT SUM(p.Payment_Amount) AS total
+                FROM payment p
+                JOIN orders o ON p.Order_ID = o.Order_ID
+                WHERE p.Payment_Method_ID = ?
+                AND o.Employee_ID = ?
+                AND DATE(p.Payment_Date) = CURDATE()
+            ");
+
+            $stmt->execute([$method_id, $employee_ID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['total'] ?? 0;
+        }
+
+
+        function getMayaToday($employee_ID, $method_id){
+            $con = $this->opencon();
+
+            $stmt = $con->prepare("
+                SELECT SUM(p.Payment_Amount) AS total
+                FROM payment p
+                JOIN orders o ON p.Order_ID = o.Order_ID
+                WHERE p.Payment_Method_ID = ?
+                AND o.Employee_ID = ?
+                AND DATE(p.Payment_Date) = CURDATE()
+            ");
+
+            $stmt->execute([$method_id, $employee_ID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['total'] ?? 0;
+        }
+
+        function getBankTransferToday($employee_ID, $method_id){
+            $con = $this->opencon();
+
+            $stmt = $con->prepare("
+                SELECT SUM(p.Payment_Amount) AS total
+                FROM payment p
+                JOIN orders o ON p.Order_ID = o.Order_ID
+                WHERE p.Payment_Method_ID = ?
+                AND o.Employee_ID = ?
+                AND DATE(p.Payment_Date) = CURDATE()
+            ");
+
+            $stmt->execute([$method_id, $employee_ID]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['total'] ?? 0;
+        }
+
+
         
         
     }

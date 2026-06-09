@@ -286,7 +286,6 @@ if(isset($_POST['remove'])){
                         <h2 class="section-heading ">Burger Section</h2>
                         <?php foreach($totalProduct as $total){?>
                             <p class=" m-0">Total Products</p>
-                            <p class=" m-0"><?php echo $total['totalproduct'];?></p>
                         <?php }?>
                     </div>
                     
@@ -354,7 +353,6 @@ if(isset($_POST['remove'])){
                         <h2 class="section-heading ">Hotdog Section</h2>
                         <?php foreach($totalProduct as $total){?>
                             <p class=" m-0">Total Products</p>
-                            <p class=" m-0"><?php echo $total['totalproduct'];?></p>
                         <?php }?>
                     </div>
                     
